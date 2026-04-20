@@ -42,6 +42,7 @@ class WidgetService {
     await HomeWidget.updateWidget(
       name: _widgetName,
       iOSName: _iosWidgetName,
+      qualifiedAndroidName: 'com.mycompany.water_tracker.widget.WaterWidgetReceiver',
     );
   }
 
