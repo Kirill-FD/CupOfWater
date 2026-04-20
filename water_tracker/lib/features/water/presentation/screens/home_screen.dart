@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:water_tracker/core/providers/widget_sync_provider.dart';
 import 'package:water_tracker/core/theme/app_colors.dart';
 import 'package:water_tracker/shared/services/notification_service.dart';
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
@@ -34,6 +35,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(widgetSyncProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Сегодня'),

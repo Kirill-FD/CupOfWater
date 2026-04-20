@@ -3,8 +3,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:water_tracker/features/water/data/water_repository.dart';
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
-import 'package:water_tracker/shared/services/widget_service.dart';
-
 part 'water_provider.g.dart';
 
 @riverpod
@@ -44,7 +42,6 @@ class TodayIntakes extends _$TodayIntakes {
     try {
       await repo.addIntake(amountMl);
       ref.invalidateSelf();
-      await WidgetService.updateWidget();
     } on Object {
       state = AsyncData<List<WaterIntake>>(
         (state.valueOrNull ?? <WaterIntake>[])
@@ -64,7 +61,6 @@ class TodayIntakes extends _$TodayIntakes {
     );
     try {
       await repo.deleteIntake(id);
-      await WidgetService.updateWidget();
     } on Object {
       ref.invalidateSelf();
       rethrow;
