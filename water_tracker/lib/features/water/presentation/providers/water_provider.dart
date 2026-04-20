@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:water_tracker/core/providers/connectivity_state_provider.dart';
+import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
 import 'package:water_tracker/features/water/data/water_repository.dart';
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
 import 'package:water_tracker/shared/services/offline_queue.dart';
@@ -39,7 +40,7 @@ class TodayIntakes extends _$TodayIntakes {
 
   /// Добавление воды. При offline — [OfflineQueue], optimistic UI.
   Future<AddIntakeResult> addIntake(int amountMl) async {
-    final String? uid = Supabase.instance.client.auth.currentUser?.id;
+    final String? uid = ref.read(currentUserProvider)?.id;
     if (uid == null) {
       return const AddIntakeResult();
     }

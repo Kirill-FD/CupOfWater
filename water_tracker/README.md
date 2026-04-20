@@ -1,6 +1,12 @@
 # Water Tracker
 
-Flutter-приложение «трекер воды» с бэкендом на Supabase.
+Мобильное Flutter-приложение для учёта потребления воды: дневная цель, история за сегодня, график в статистике, напоминания, виджет на рабочем столе, синхронизация с Supabase.
+
+## Скриншоты
+
+Сюда можно добавить скриншоты (например `docs/screenshots/home.png`, `settings.png`) и вставить в README:
+
+`![Home](docs/screenshots/home.png)`
 
 ## Запуск
 
@@ -35,11 +41,76 @@ chmod +x run.sh
 
 ## Тесты
 
-В `widget_test` Supabase инициализируется в `setUpAll` тестовыми значениями (без сетевых запросов до первого обращения к API).
+- **Unit:** `test/features/water/water_repository_test.dart` — мок `SupabaseClient` (mocktail), `addIntake` / `getTodayTotal` / `deleteIntake` и проверка параметров `insert`.
+- **Provider:** `test/features/water/water_provider_test.dart` — `ProviderContainer`, оверрайд `waterRepositoryProvider`, сценарий оптимистичного добавления и отката при ошибке.
+- **Widget:** `test/features/water/home_screen_test.dart` — прогресс, кнопка, `ListView`, тап и `verify` на `addIntake(250)`.
+- **Интеграционные:** `integration_test/app_test.dart` — сценарий на экране «дом» с in-memory-репозиторием: добавить стакан, свайп удалить. Запуск на устройстве/эмуляторе с той же `dart-define`, что и для приложения (см. ниже).
 
 ```bash
+cd water_tracker
 flutter test
+# интеграция (нужен подключённый девайс / эмулятор):
+# flutter test integration_test/app_test.dart
 ```
+
+## Релизная сборка
+
+Секреты **только** через `--dart-define` (или CI secrets), не в коде. Проект читает `String.fromEnvironment('SUPABASE_URL')` и `SUPABASE_ANON_KEY` в `lib/core/config/env.dart`.
+
+### Android (App Bundle + подпись)
+
+1. Keystore (один раз, локально, не в git):
+
+   `keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload`
+
+2. Скопируйте `android/key.properties.example` → `android/key.properties` (файл в `.gitignore`), укажите `storePassword`, `keyPassword`, `keyAlias`, `storeFile` (путь к `.jks`).
+
+3. Сборка AAB с теми же `dart-define`, что и для run:
+
+   ```bash
+   flutter build appbundle \
+     --dart-define=SUPABASE_URL=https://xxx.supabase.co \
+     --dart-define=SUPABASE_ANON_KEY=eyJhbGci...
+   ```
+
+4. R8/ProGuard: `android/app/proguard-rules.pro` подключён в `android/app/build.gradle.kts` для `release`. При проблемах на релизе можно временно отключить `isMinifyEnabled` в `buildTypes.release`.
+
+### iOS (TestFlight / App Store)
+
+1. В Xcode: target **Runner** → **Signing & Capabilities** → **Team** — ваша Apple Developer team.
+2. **Product** → **Archive** → **Distribute App** → **App Store Connect** (TestFlight / App Store).
+3. Те же URL и anon key передавайте в `dart-define` в схеме сборки (или через `xcconfig` / CI), не храните в репозитории.
+
+## Виджеты (кратко)
+
+- **iOS:** App Group, Widget Extension, `home_widget` (см. `lib/shared/services/widget_service.dart` и iOS-таргет в Xcode). Обновление данных — через `WidgetService.update` при смене суточного объёма/цели.
+- **Android:** Glance (см. зависимости в `android/app/build.gradle.kts` и `qualifiedAndroidName` в `WidgetService`).
+
+**Deep link:** `waterwidget://add?ml=250` — обрабатывается в `WidgetService.backgroundCallback` (тестируйте на обеих платформах после настройки intent / URL types).
+
+## Структура проекта (кратко)
+
+- `lib/core/` — конфиг, роутер, тема, провайдеры, ошибки.
+- `lib/features/{auth,water,settings,stats}/` — data / domain / presentation.
+- `lib/l10n/` — локализация; `lib/shared/` — уведомления, виджет, очередь offline.
+- `test/` — unit / widget; `integration_test/` — сценарии на устройстве.
+
+## Чеклист перед релизом
+
+- [ ] Ключи Supabase только через `--dart-define`, не в исходниках.
+- [ ] В Supabase включены RLS-политики для `profiles` и `water_intakes`.
+- [ ] Подтверждение email в Supabase (если требуется для продукта).
+- [ ] Разрешения на push-уведомления запрашиваются (см. `NotificationService` / `HomeScreen`).
+- [ ] Виджет показывает актуальные `current` / `goal` после обновлений.
+- [ ] Deep link `waterwidget://add?ml=250` на iOS и Android.
+- [ ] Тёмная тема выглядит корректно.
+- [ ] Нет `print` в релизе (только `debugPrint` / логер по правилам проекта).
+- [ ] `dart pub outdated` в каталоге `water_tracker` — при необходимости обновить зависимости.
+- [ ] ProGuard/R8: при крашах в release проверьте `proguard-rules.pro` и плагины (сеть, Glance, home_widget).
+
+## CI
+
+В репозитории: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — `dart format --set-exit-if-changed`, `flutter analyze`, `flutter test`, `flutter build apk` с тестовыми `--dart-define` (плейсхолдеры).
 
 ## Supabase: полный SQL (SQL Editor)
 

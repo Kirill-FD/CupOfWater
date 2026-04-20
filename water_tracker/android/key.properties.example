@@ -1,0 +1,7 @@
+# Скопируйте в android/key.properties (файл в .gitignore) и заполните.
+storePassword=...
+keyPassword=...
+keyAlias=upload
+# Путь к keystore. В build.gradle [file] это от каталога android/app/:
+# storeFile=../upload-keystore.jks
+storeFile=../upload-keystore.jks

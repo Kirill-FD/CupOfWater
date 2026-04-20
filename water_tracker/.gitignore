@@ -47,6 +47,10 @@ app.*.map.json
 .env
 .env.*
 !.env.example
+# Android release signing
+android/key.properties
+*.jks
+*.keystore
 ios/Runner/GoogleService-Info.plist
 android/app/google-services.json
 

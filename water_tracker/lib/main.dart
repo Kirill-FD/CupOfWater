@@ -4,37 +4,19 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:home_widget/home_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:water_tracker/core/config/supabase_config.dart';
-import 'package:water_tracker/core/error/app_error_handler.dart';
+import 'package:water_tracker/app_bootstrap.dart';
 import 'package:water_tracker/core/providers/connectivity_state_provider.dart';
 import 'package:water_tracker/core/providers/theme_provider.dart';
 import 'package:water_tracker/core/router/app_router.dart';
 import 'package:water_tracker/core/theme/app_theme.dart';
 import 'package:water_tracker/l10n/app_localizations.dart';
-import 'package:water_tracker/shared/services/notification_service.dart';
 import 'package:water_tracker/shared/services/offline_queue.dart';
-import 'package:water_tracker/shared/services/widget_service.dart';
 import 'package:water_tracker/features/water/presentation/providers/water_provider.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  installAppErrorHandlers();
-  await SupabaseConfig.init();
-  await NotificationService.instance.init();
-  await WidgetService.init();
-  final Uri? launchFromWidget = await HomeWidget.initiallyLaunchedFromHomeWidget();
-  if (launchFromWidget != null) {
-    await WidgetService.backgroundCallback(launchFromWidget);
-  }
-  HomeWidget.widgetClicked.listen((Uri? uri) {
-    if (uri == null) {
-      return;
-    }
-    unawaited(WidgetService.backgroundCallback(uri));
-  });
+  await bootstrapApp();
   runApp(
     const ProviderScope(
       child: MyApp(),
