@@ -27,6 +27,7 @@ dependencies:
   percent_indicator: ^4.2.3
   lottie: ^3.1.2
   confetti: ^0.7.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +40,10 @@ dev_dependencies:
   custom_lint: ^0.7.3
   riverpod_lint: ^2.3.10
   mocktail: ^1.0.4
+
+dependency_overrides:
+  # analyzer_plugin 0.12.x не собирается с analyzer 7.6 (build_runner).
+  analyzer_plugin: ^0.13.4
 
 flutter:
   uses-material-design: true
