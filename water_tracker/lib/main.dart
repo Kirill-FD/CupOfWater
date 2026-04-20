@@ -1,19 +1,27 @@
 import 'dart:async' show unawaited;
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:water_tracker/core/config/supabase_config.dart';
-import 'package:water_tracker/core/providers/app_theme_mode_provider.dart';
+import 'package:water_tracker/core/error/app_error_handler.dart';
+import 'package:water_tracker/core/providers/connectivity_state_provider.dart';
+import 'package:water_tracker/core/providers/theme_provider.dart';
 import 'package:water_tracker/core/router/app_router.dart';
 import 'package:water_tracker/core/theme/app_theme.dart';
+import 'package:water_tracker/l10n/app_localizations.dart';
 import 'package:water_tracker/shared/services/notification_service.dart';
+import 'package:water_tracker/shared/services/offline_queue.dart';
 import 'package:water_tracker/shared/services/widget_service.dart';
+import 'package:water_tracker/features/water/presentation/providers/water_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installAppErrorHandlers();
   await SupabaseConfig.init();
   await NotificationService.instance.init();
   await WidgetService.init();
@@ -40,7 +48,25 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final GoRouter router = ref.watch(appRouterProvider);
-    return ref.watch(appThemeModeProvider).when(
+
+    // Очередь offline: при смене сети на online — сброс в Supabase
+    ref.listen<AsyncValue<List<ConnectivityResult>>>(
+      connectivityStreamProvider,
+      (AsyncValue<List<ConnectivityResult>>? a, AsyncValue<List<ConnectivityResult>> b) {
+        b.whenData((List<ConnectivityResult> r) {
+          if (!isOnlineList(r)) {
+            return;
+          }
+          if (Supabase.instance.client.auth.currentUser == null) {
+            return;
+          }
+          unawaited(_flushQueue(ref));
+        });
+      },
+      fireImmediately: true,
+    );
+
+    return ref.watch(themeProvider).when(
           data: (ThemeMode m) {
             return _MaterialApp(router, m);
           },
@@ -51,6 +77,14 @@ class MyApp extends ConsumerWidget {
             return _MaterialApp(router, ThemeMode.system);
           },
         );
+  }
+}
+
+Future<void> _flushQueue(WidgetRef ref) async {
+  final OfflineQueue q = await OfflineQueue.instance;
+  final int n = await q.flush(Supabase.instance.client);
+  if (n > 0) {
+    ref.invalidate(todayIntakesProvider);
   }
 }
 
@@ -66,12 +100,14 @@ class _MaterialApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Water Tracker',
+      onGenerateTitle: (BuildContext c) => AppLocalizations.of(c).appTitle,
       routerConfig: router,
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

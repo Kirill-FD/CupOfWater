@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   supabase_flutter: ^2.5.6
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
@@ -29,6 +31,7 @@ dependencies:
   confetti: ^0.7.0
   google_fonts: ^6.2.1
   url_launcher: ^6.2.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -41,6 +44,8 @@ dev_dependencies:
   custom_lint: ^0.7.3
   riverpod_lint: ^2.3.10
   mocktail: ^1.0.4
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.3
 
 dependency_overrides:
   # analyzer_plugin 0.12.x не собирается с analyzer 7.6 (build_runner).
@@ -48,3 +53,25 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  generate: true
+  assets:
+    - assets/animations/
+    - assets/empty/
+    - assets/icon/
+
+# dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 23
+
+# dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#E3F2FD"
+  image: "assets/icon/icon.png"
+  android: true
+  ios: true
+  android_12:
+    color: "#E3F2FD"
+    image: "assets/icon/icon.png"

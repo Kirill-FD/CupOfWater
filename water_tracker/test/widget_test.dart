@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:water_tracker/main.dart';
 
 void main() {
@@ -29,6 +28,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Войти'), findsOneWidget);
+    // Локализация по умолчанию [en] — подпись кнопки из app_en.
+    expect(find.text('Log in'), findsOneWidget);
   });
 }

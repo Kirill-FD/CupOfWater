@@ -1,0 +1,8 @@
+# Не пересекайте с lib/l10n/app_localizations.dart (ручной слой):
+# `flutter gen-l10n` кладёт сюда, импортируйте при миграции.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations_from_arb.dart
+synthetic-package: false
+output-dir: lib/l10n/gen
+output-class: L10nFromArb

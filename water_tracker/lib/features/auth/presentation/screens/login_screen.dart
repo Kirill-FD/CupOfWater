@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import 'package:water_tracker/core/theme/app_colors.dart';
+import 'package:water_tracker/l10n/app_localizations.dart';
 import 'package:water_tracker/features/auth/data/auth_repository.dart';
 import 'package:water_tracker/features/auth/domain/errors/auth_repository_exception.dart';
 import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
@@ -74,6 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -91,15 +93,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Трекер воды',
+                    l.appName,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 32),
                   TextFormField(
                     controller: _emailController,
                     autofillHints: const <String>[AutofillHints.email],
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
+                    decoration: InputDecoration(
+                      labelText: l.email,
                     ),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -107,10 +109,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     validator: (String? value) {
                       final String v = value?.trim() ?? '';
                       if (v.isEmpty) {
-                        return 'Введите email';
+                        return l.enterEmail;
                       }
                       if (!_emailRegExp.hasMatch(v)) {
-                        return 'Некорректный email';
+                        return l.invalidEmail;
                       }
                       return null;
                     },
@@ -119,8 +121,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Пароль',
+                    decoration: InputDecoration(
+                      labelText: l.password,
                     ),
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _onSubmit(),
@@ -128,10 +130,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     validator: (String? value) {
                       final String v = value ?? '';
                       if (v.isEmpty) {
-                        return 'Введите пароль';
+                        return l.enterPassword;
                       }
                       if (v.length < 6) {
-                        return 'Пароль не менее 6 символов';
+                        return l.minPassword;
                       }
                       return null;
                     },
@@ -148,7 +150,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               height: 24,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Войти'),
+                          : Text(l.login),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -156,7 +158,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: _isSubmitting
                         ? null
                         : () => context.push('/register'),
-                    child: const Text('Нет аккаунта? Регистрация'),
+                    child: Text(l.noAccount),
                   ),
                 ],
               ),

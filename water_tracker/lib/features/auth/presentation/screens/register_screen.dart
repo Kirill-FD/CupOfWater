@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException, AuthResponse;
 
 import 'package:water_tracker/core/theme/app_colors.dart';
+import 'package:water_tracker/l10n/app_localizations.dart';
 import 'package:water_tracker/features/auth/data/auth_repository.dart';
 import 'package:water_tracker/features/auth/domain/errors/auth_repository_exception.dart';
 import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
@@ -69,13 +70,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       }
       if (response.session == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Проверьте почту для подтверждения'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).checkEmailConfirm),
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Регистрация прошла успешно')),
+          SnackBar(content: Text(AppLocalizations.of(context).registerSuccess)),
         );
       }
       if (response.session == null) {
@@ -99,9 +100,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Регистрация'),
+        title: Text(l.registerAppBar),
       ),
       body: SafeArea(
         child: Center(
@@ -119,15 +121,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Создать аккаунт',
+                    l.register,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 32),
                   TextFormField(
                     controller: _emailController,
                     autofillHints: const <String>[AutofillHints.email],
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
+                    decoration: InputDecoration(
+                      labelText: l.email,
                     ),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -135,10 +137,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     validator: (String? value) {
                       final String v = value?.trim() ?? '';
                       if (v.isEmpty) {
-                        return 'Введите email';
+                        return l.enterEmail;
                       }
                       if (!_emailRegExp.hasMatch(v)) {
-                        return 'Некорректный email';
+                        return l.invalidEmail;
                       }
                       return null;
                     },
@@ -147,18 +149,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Пароль',
+                    decoration: InputDecoration(
+                      labelText: l.password,
                     ),
                     textInputAction: TextInputAction.next,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (String? value) {
                       final String v = value ?? '';
                       if (v.isEmpty) {
-                        return 'Введите пароль';
+                        return l.enterPassword;
                       }
                       if (v.length < 6) {
-                        return 'Пароль не менее 6 символов';
+                        return l.minPassword;
                       }
                       return null;
                     },
@@ -167,15 +169,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Повторите пароль',
+                    decoration: InputDecoration(
+                      labelText: l.confirmPassword,
                     ),
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _onSubmit(),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (String? value) {
                       if ((value ?? '') != _passwordController.text) {
-                        return 'Пароли не совпадают';
+                        return l.passwordsMismatch;
                       }
                       return null;
                     },
@@ -192,7 +194,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               height: 24,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Зарегистрироваться'),
+                          : Text(l.signUpCta),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -200,7 +202,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     onPressed: _isSubmitting
                         ? null
                         : () => context.go('/login'),
-                    child: const Text('Уже есть аккаунт? Войти'),
+                    child: Text(l.haveAccount),
                   ),
                 ],
               ),

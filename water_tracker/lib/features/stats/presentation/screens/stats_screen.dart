@@ -8,21 +8,24 @@ import 'package:intl/intl.dart';
 import 'package:water_tracker/core/theme/app_colors.dart';
 import 'package:water_tracker/features/stats/presentation/providers/stats_provider.dart';
 import 'package:water_tracker/features/water/presentation/providers/water_provider.dart';
+import 'package:water_tracker/l10n/app_localizations.dart';
+import 'package:water_tracker/shared/widgets/shimmer_placeholder.dart';
 
 class StatsScreen extends StatelessWidget {
   const StatsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Статистика'),
-          bottom: const TabBar(
+          title: Text(l.statsTitle),
+          bottom: TabBar(
             tabs: <Widget>[
-              Tab(text: 'Неделя'),
-              Tab(text: 'Месяц'),
+              Tab(text: l.weeklyStats),
+              Tab(text: l.monthlyStats),
             ],
           ),
         ),
@@ -43,13 +46,21 @@ class WeeklyStatsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<Map<DateTime, int>> week = ref.watch(weeklyStatsProvider);
+    final String locale = Localizations.localeOf(context).toString();
     return week.when(
       data: (Map<DateTime, int> data) {
         return ref.watch(dailyWaterGoalProvider).when(
               data: (int goal) {
-                return _StatsScrollBody(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    ref.invalidate(weeklyStatsProvider);
+                    ref.invalidate(dailyWaterGoalProvider);
+                    ref.invalidate(currentStreakProvider);
+                    await ref.read(weeklyStatsProvider.future);
+                  },
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     children: <Widget>[
                       _SummaryCards(
                         data: data,
@@ -66,8 +77,7 @@ class WeeklyStatsView extends ConsumerWidget {
                             if (i < 0 || i >= days.length) {
                               return '';
                             }
-                            return DateFormat.E('ru_RU')
-                                .format(days[i]);
+                            return DateFormat.E(locale).format(days[i]);
                           },
                         ),
                       ),
@@ -76,7 +86,7 @@ class WeeklyStatsView extends ConsumerWidget {
                 );
               },
               loading: () {
-                return const _CenteredLoader();
+                return const _ShimmerStatsLoader();
               },
               error: (Object e, StackTrace s) {
                 return _ErrorState(message: e.toString());
@@ -84,7 +94,7 @@ class WeeklyStatsView extends ConsumerWidget {
             );
       },
       loading: () {
-        return const _CenteredLoader();
+        return const _ShimmerStatsLoader();
       },
       error: (Object e, StackTrace s) {
         return _ErrorState(message: e.toString());
@@ -99,13 +109,21 @@ class MonthlyStatsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<Map<DateTime, int>> month = ref.watch(monthlyStatsProvider);
+    final String locale = Localizations.localeOf(context).toString();
     return month.when(
       data: (Map<DateTime, int> data) {
         return ref.watch(dailyWaterGoalProvider).when(
               data: (int goal) {
-                return _StatsScrollBody(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    ref.invalidate(monthlyStatsProvider);
+                    ref.invalidate(dailyWaterGoalProvider);
+                    ref.invalidate(currentStreakProvider);
+                    await ref.read(monthlyStatsProvider.future);
+                  },
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     children: <Widget>[
                       _SummaryCards(
                         data: data,
@@ -130,7 +148,7 @@ class MonthlyStatsView extends ConsumerWidget {
                               if (i % 3 != 0 && i != days.length - 1) {
                                 return '';
                               }
-                              return DateFormat('d MMM', 'ru_RU')
+                              return DateFormat('d MMM', locale)
                                   .format(days[i]);
                             },
                             groupsSpace: 1,
@@ -144,7 +162,7 @@ class MonthlyStatsView extends ConsumerWidget {
                 );
               },
               loading: () {
-                return const _CenteredLoader();
+                return const _ShimmerStatsLoader();
               },
               error: (Object e, StackTrace s) {
                 return _ErrorState(message: e.toString());
@@ -152,7 +170,7 @@ class MonthlyStatsView extends ConsumerWidget {
             );
       },
       loading: () {
-        return const _CenteredLoader();
+        return const _ShimmerStatsLoader();
       },
       error: (Object e, StackTrace s) {
         return _ErrorState(message: e.toString());
@@ -161,27 +179,20 @@ class MonthlyStatsView extends ConsumerWidget {
   }
 }
 
-class _StatsScrollBody extends StatelessWidget {
-  const _StatsScrollBody({required this.child});
-
-  final Widget child;
+class _ShimmerStatsLoader extends StatelessWidget {
+  const _ShimmerStatsLoader();
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      child: child,
-    );
-  }
-}
-
-class _CenteredLoader extends StatelessWidget {
-  const _CenteredLoader();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
+      children: <Widget>[
+        const ShimmerListTileLine(),
+        const SizedBox(height: 12),
+        const ShimmerListTileLine(),
+        const SizedBox(height: 20),
+        const ShimmerChartBox(),
+      ],
     );
   }
 }
@@ -216,6 +227,7 @@ class _SummaryCards extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
     final int sum = data.values.fold<int>(0, (int a, int b) => a + b);
     final double average = data.isEmpty ? 0 : sum / data.length;
     final int daysMet = data.values
@@ -229,21 +241,21 @@ class _SummaryCards extends ConsumerWidget {
           children: <Widget>[
             Expanded(
               child: _InfoCard(
-                label: 'Среднее / день',
-                value: '${average.round()} мл',
+                label: l.averagePerDay,
+                value: l.mlFormat(average.round()),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: _InfoCard(
-                label: 'Дней с целью',
+                label: l.daysGoalMet,
                 value: '$daysMet',
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: _InfoCard(
-                label: 'Streak',
+                label: l.streakLabel,
                 value: '$streak',
               ),
             ),
@@ -253,23 +265,23 @@ class _SummaryCards extends ConsumerWidget {
       loading: () {
         return Row(
           children: <Widget>[
-            const Expanded(
+            Expanded(
               child: _InfoCard(
-                label: 'Среднее / день',
-                value: '—',
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Expanded(
-              child: _InfoCard(
-                label: 'Дней с целью',
+                label: l.averagePerDay,
                 value: '—',
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: _InfoCard(
-                label: 'Streak',
+                label: l.daysGoalMet,
+                value: '—',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _InfoCard(
+                label: l.streakLabel,
                 value: '…',
               ),
             ),
@@ -281,21 +293,21 @@ class _SummaryCards extends ConsumerWidget {
           children: <Widget>[
             Expanded(
               child: _InfoCard(
-                label: 'Среднее / день',
-                value: '${average.round()} мл',
+                label: l.averagePerDay,
+                value: l.mlFormat(average.round()),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: _InfoCard(
-                label: 'Дней с целью',
+                label: l.daysGoalMet,
                 value: '$daysMet',
               ),
             ),
             const SizedBox(width: 8),
-            const Expanded(
+            Expanded(
               child: _InfoCard(
-                label: 'Streak',
+                label: l.streakLabel,
                 value: '—',
               ),
             ),
@@ -366,7 +378,7 @@ class _BarChartBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<DateTime> days = <DateTime>[...sortedDays]..sort();
     if (days.isEmpty) {
-      return const Center(child: Text('Нет данных'));
+      return Center(child: Text(AppLocalizations.of(context).noData));
     }
     final List<int> yVals =
         days.map((DateTime d) => values[d] ?? 0).toList();
@@ -375,7 +387,7 @@ class _BarChartBlock extends StatelessWidget {
         : math.max(goal, yVals.reduce(math.max));
     final double maxY = (maxVal * 1.15).ceilToDouble();
     if (maxY == 0) {
-      return const Center(child: Text('Нет данных'));
+      return Center(child: Text(AppLocalizations.of(context).noData));
     }
     const Color ok = AppColors.success;
     const Color low = AppColors.primary;

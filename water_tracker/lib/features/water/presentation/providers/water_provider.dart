@@ -1,9 +1,22 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:water_tracker/core/providers/connectivity_state_provider.dart';
 import 'package:water_tracker/features/water/data/water_repository.dart';
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
+import 'package:water_tracker/shared/services/offline_queue.dart';
+
 part 'water_provider.g.dart';
+
+class AddIntakeResult {
+  const AddIntakeResult({
+    this.goalFirstHit = false,
+    this.queuedOffline = false,
+  });
+
+  final bool goalFirstHit;
+  final bool queuedOffline;
+}
 
 @riverpod
 WaterRepository waterRepository(WaterRepositoryRef ref) {
@@ -18,12 +31,22 @@ class TodayIntakes extends _$TodayIntakes {
     return repo.getTodayIntakes();
   }
 
-  Future<void> addIntake(int amountMl) async {
-    final WaterRepository repo = ref.read(waterRepositoryProvider);
+  int _sumNonTemp(List<WaterIntake>? list) {
+    return (list ?? <WaterIntake>[])
+        .where((WaterIntake i) => !i.id.startsWith('temp-'))
+        .fold<int>(0, (int a, WaterIntake b) => a + b.amountMl);
+  }
+
+  /// Добавление воды. При offline — [OfflineQueue], optimistic UI.
+  Future<AddIntakeResult> addIntake(int amountMl) async {
     final String? uid = Supabase.instance.client.auth.currentUser?.id;
     if (uid == null) {
-      return;
+      return const AddIntakeResult();
     }
+    final int goal = await ref.read(dailyWaterGoalProvider.future);
+    final int before = _sumNonTemp(state.valueOrNull);
+    final bool wouldHit = before < goal && before + amountMl >= goal;
+
     final String tempId = 'temp-${DateTime.now().millisecondsSinceEpoch}';
     final DateTime now = DateTime.now();
     final WaterIntake optimistic = WaterIntake(
@@ -39,9 +62,22 @@ class TodayIntakes extends _$TodayIntakes {
         ...?state.valueOrNull,
       ],
     );
+
+    final bool online = await ref.read(isOnlineNowProvider.future);
+    if (!online) {
+      final OfflineQueue q = await OfflineQueue.instance;
+      await q.enqueueAddIntake(amountMl);
+      return AddIntakeResult(queuedOffline: true, goalFirstHit: false);
+    }
+
+    final WaterRepository repo = ref.read(waterRepositoryProvider);
     try {
       await repo.addIntake(amountMl);
       ref.invalidateSelf();
+      return AddIntakeResult(
+        goalFirstHit: wouldHit,
+        queuedOffline: false,
+      );
     } on Object {
       state = AsyncData<List<WaterIntake>>(
         (state.valueOrNull ?? <WaterIntake>[])

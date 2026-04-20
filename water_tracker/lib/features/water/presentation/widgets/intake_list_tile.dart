@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'package:water_tracker/core/theme/app_colors.dart';
+import 'package:water_tracker/l10n/app_localizations.dart';
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
 import 'package:water_tracker/features/water/presentation/providers/water_provider.dart';
 
@@ -44,7 +45,7 @@ class IntakeListTile extends ConsumerWidget {
             size: 20,
           ),
         ),
-        title: Text('${intake.amountMl} мл'),
+        title: Text(AppLocalizations.of(context).mlFormat(intake.amountMl)),
         subtitle: Text(DateFormat('HH:mm').format(intake.consumedAt)),
       ),
     );
