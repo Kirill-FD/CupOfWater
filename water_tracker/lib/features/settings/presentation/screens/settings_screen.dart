@@ -2,7 +2,6 @@ import 'dart:async' show unawaited;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:water_tracker/core/providers/app_theme_mode_provider.dart';
@@ -29,16 +28,7 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Настройки'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: ref.watch(userProfileNotifierProvider).when(
             data: (UserProfile p) {

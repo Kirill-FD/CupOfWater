@@ -13,6 +13,43 @@ import 'package:water_tracker/features/water/presentation/screens/home_screen.da
 
 part 'app_router.g.dart';
 
+class _MainShell extends StatelessWidget {
+  const _MainShell({required this.navigationShell});
+
+  final StatefulNavigationShell navigationShell;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: navigationShell.currentIndex,
+        onTap: (int i) {
+          navigationShell.goBranch(i);
+        },
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            activeIcon: Icon(Icons.bar_chart),
+            label: 'Stats',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 @Riverpod(keepAlive: true)
 GoRouter appRouter(AppRouterRef ref) {
   final ValueNotifier<int> refresh = ValueNotifier<int>(0);
@@ -74,26 +111,49 @@ GoRouter appRouter(AppRouterRef ref) {
           return const RegisterScreen();
         },
       ),
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (BuildContext context, GoRouterState state) {
-          return const HomeScreen();
+      StatefulShellRoute.indexedStack(
+        builder: (
+          BuildContext context,
+          GoRouterState state,
+          StatefulNavigationShell navigationShell,
+        ) {
+          return _MainShell(navigationShell: navigationShell);
         },
-      ),
-      GoRoute(
-        path: '/settings',
-        name: 'settings',
-        builder: (BuildContext context, GoRouterState state) {
-          return const SettingsScreen();
-        },
-      ),
-      GoRoute(
-        path: '/stats',
-        name: 'stats',
-        builder: (BuildContext context, GoRouterState state) {
-          return const StatsScreen();
-        },
+        branches: <StatefulShellBranch>[
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/home',
+                name: 'home',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const HomeScreen();
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/stats',
+                name: 'stats',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const StatsScreen();
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/settings',
+                name: 'settings',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const SettingsScreen();
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

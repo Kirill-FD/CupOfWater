@@ -3,8 +3,6 @@ import 'dart:async' show unawaited;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:water_tracker/core/providers/widget_sync_provider.dart';
 import 'package:water_tracker/core/theme/app_colors.dart';
 import 'package:water_tracker/shared/services/notification_service.dart';
@@ -39,18 +37,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Сегодня'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () => context.go('/settings'),
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: 'Настройки',
-          ),
-          IconButton(
-            onPressed: () => context.go('/stats'),
-            icon: const Icon(Icons.bar_chart_outlined),
-            tooltip: 'Статистика',
-          ),
-        ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
