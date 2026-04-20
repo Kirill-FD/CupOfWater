@@ -6,23 +6,6 @@ part of 'app_router.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authStateHash() => r'4de49fc8547d39c6e1a8186fda8192c557bb144b';
-
-/// See also [authState].
-@ProviderFor(authState)
-final authStateProvider = AutoDisposeStreamProvider<AuthState>.internal(
-  authState,
-  name: r'authStateProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$authStateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AuthStateRef = AutoDisposeStreamProviderRef<AuthState>;
 String _$appRouterHash() => r'b64c033520a660143682c3b3314724a666b57592';
 
 /// See also [appRouter].

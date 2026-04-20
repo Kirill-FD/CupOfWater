@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
 import 'package:water_tracker/features/auth/presentation/screens/login_screen.dart';
 import 'package:water_tracker/features/auth/presentation/screens/register_screen.dart';
 import 'package:water_tracker/features/auth/presentation/screens/splash_screen.dart';
@@ -11,11 +12,6 @@ import 'package:water_tracker/features/stats/presentation/screens/stats_screen.d
 import 'package:water_tracker/features/water/presentation/screens/home_screen.dart';
 
 part 'app_router.g.dart';
-
-@riverpod
-Stream<AuthState> authState(AuthStateRef ref) {
-  return Supabase.instance.client.auth.onAuthStateChange;
-}
 
 @Riverpod(keepAlive: true)
 GoRouter appRouter(AppRouterRef ref) {
