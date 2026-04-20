@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:water_tracker/core/providers/app_theme_mode_provider.dart';
-import 'package:water_tracker/core/services/notification_service.dart';
+import 'package:water_tracker/shared/services/notification_service.dart';
 import 'package:water_tracker/core/theme/app_colors.dart';
 import 'package:water_tracker/features/auth/domain/models/user_profile.dart';
 import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
@@ -140,7 +140,10 @@ class SettingsScreen extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: TextButton(
                         onPressed: () {
-                          unawaited(NotificationService.showImmediate());
+                          unawaited(
+                            NotificationService.instance
+                                .showImmediate('Тест', 'Уведомления настроены'),
+                          );
                         },
                         child: const Text('Тестовое уведомление'),
                       ),

@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,7 @@ import 'package:water_tracker/core/theme/app_colors.dart';
 import 'package:water_tracker/features/auth/data/auth_repository.dart';
 import 'package:water_tracker/features/auth/domain/errors/auth_repository_exception.dart';
 import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
+import 'package:water_tracker/shared/services/notification_service.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -78,6 +81,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (response.session == null) {
         context.go('/login');
       } else {
+        unawaited(NotificationService.instance.requestPermissionsIfFirstTime());
         context.go('/home');
       }
     } on AuthRepositoryException catch (e) {

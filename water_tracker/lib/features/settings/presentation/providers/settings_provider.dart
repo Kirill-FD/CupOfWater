@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:water_tracker/core/services/notification_service.dart';
+import 'package:water_tracker/shared/services/notification_service.dart';
 import 'package:water_tracker/features/auth/domain/models/user_profile.dart';
 import 'package:water_tracker/features/settings/data/settings_repository.dart';
 import 'package:water_tracker/features/water/presentation/providers/water_provider.dart';
@@ -65,7 +65,12 @@ class UserProfileNotifier extends _$UserProfileNotifier {
               'reminder_end_time': timeOfDayToHms(endTime),
             },
           );
-      await NotificationService.scheduleReminders(p);
+      await NotificationService.instance.scheduleReminders(
+        enabled: p.reminderEnabled,
+        intervalMinutes: p.reminderIntervalMinutes,
+        startTime: p.startTimeOfDay,
+        endTime: p.endTimeOfDay,
+      );
       return p;
     });
   }

@@ -6,17 +6,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:water_tracker/core/theme/app_colors.dart';
+import 'package:water_tracker/shared/services/notification_service.dart';
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
 import 'package:water_tracker/features/water/presentation/providers/water_provider.dart';
 import 'package:water_tracker/features/water/presentation/widgets/intake_list_tile.dart';
 import 'package:water_tracker/features/water/presentation/widgets/water_progress_circle.dart';
 import 'package:water_tracker/shared/widgets/empty_state_widget.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (!context.mounted) {
+        return;
+      }
+      unawaited(NotificationService.instance.requestPermissionsIfFirstTime());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Сегодня'),

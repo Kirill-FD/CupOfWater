@@ -5,13 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:water_tracker/core/config/supabase_config.dart';
 import 'package:water_tracker/core/providers/app_theme_mode_provider.dart';
 import 'package:water_tracker/core/router/app_router.dart';
-import 'package:water_tracker/core/services/notification_service.dart';
 import 'package:water_tracker/core/theme/app_theme.dart';
+import 'package:water_tracker/shared/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseConfig.init();
-  await NotificationService.init();
+  await NotificationService.instance.init();
   runApp(
     const ProviderScope(
       child: MyApp(),
