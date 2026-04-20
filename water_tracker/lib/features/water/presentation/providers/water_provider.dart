@@ -80,3 +80,20 @@ int todayTotal(TodayTotalRef ref) {
       <WaterIntake>[];
   return intakes.fold<int>(0, (int sum, WaterIntake i) => sum + i.amountMl);
 }
+
+@riverpod
+Future<int> dailyWaterGoal(DailyWaterGoalRef ref) async {
+  final String? uid = Supabase.instance.client.auth.currentUser?.id;
+  if (uid == null) {
+    return 2000;
+  }
+  final Map<String, dynamic>? row = await Supabase.instance.client
+      .from('profiles')
+      .select('daily_goal_ml')
+      .eq('id', uid)
+      .maybeSingle();
+  if (row == null) {
+    return 2000;
+  }
+  return (row['daily_goal_ml'] as num?)?.toInt() ?? 2000;
+}

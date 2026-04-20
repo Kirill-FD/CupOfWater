@@ -40,6 +40,23 @@ final todayTotalProvider = AutoDisposeProvider<int>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef TodayTotalRef = AutoDisposeProviderRef<int>;
+String _$dailyWaterGoalHash() => r'363cb4ec24fb38594169dcc46e641e4f64d98417';
+
+/// See also [dailyWaterGoal].
+@ProviderFor(dailyWaterGoal)
+final dailyWaterGoalProvider = AutoDisposeFutureProvider<int>.internal(
+  dailyWaterGoal,
+  name: r'dailyWaterGoalProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dailyWaterGoalHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DailyWaterGoalRef = AutoDisposeFutureProviderRef<int>;
 String _$todayIntakesHash() => r'bab0f6ce0bcfbdeb00b85a0f434c51db1eebf818';
 
 /// See also [TodayIntakes].
