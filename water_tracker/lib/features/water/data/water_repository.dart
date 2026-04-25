@@ -2,7 +2,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:water_tracker/features/water/domain/models/water_intake.dart';
 
-// Таблица: колонка consumed_at; RPC get_today_intake(p_user_id uuid), get_stats_range.
+// Таблица: колонка consumed_at; RPC get_today_intake(p_user_id uuid),
+// get_stats_range(p_start date, p_end date, p_tz text, p_user_id uuid).
 
 class WaterRepository {
   WaterRepository(this._client);
@@ -28,22 +29,20 @@ class WaterRepository {
     return '${d.year}-$m-$day';
   }
 
+  String _normalizeTimezone(String timezone) {
+    final String trimmed = timezone.trim();
+    return trimmed.isEmpty ? 'UTC' : trimmed;
+  }
+
   Future<List<WaterIntake>> getTodayIntakes() async {
     final DateTime start = _startOfLocalDay();
-    final Object? data = await _client
+    final PostgrestList data = await _client
         .from('water_intakes')
         .select()
         .eq('user_id', _userId)
         .gte('consumed_at', start.toIso8601String())
         .order('consumed_at', ascending: false);
-    final List<dynamic> response = (data is List) ? data : <dynamic>[];
-    return response
-        .map(
-          (e) => WaterIntake.fromJson(
-            Map<String, dynamic>.from(e as Map<dynamic, dynamic>),
-          ),
-        )
-        .toList();
+    return data.map((PostgrestMap e) => WaterIntake.fromJson(e)).toList();
   }
 
   /// [get_today_intake] в Postgrest — с параметром `p_user_id` (см. миграцию).
@@ -65,7 +64,7 @@ class WaterRepository {
   Future<WaterIntake> addIntake(int amountMl) async {
     final String uid = _userId;
     final DateTime now = DateTime.now();
-    final Map<String, dynamic> row = await _client
+    final PostgrestMap row = await _client
         .from('water_intakes')
         .insert(<String, dynamic>{
           'user_id': uid,
@@ -74,25 +73,31 @@ class WaterRepository {
           'created_at': now.toIso8601String(),
         })
         .select()
-        .single() as Map<String, dynamic>;
+        .single();
     return WaterIntake.fromJson(row);
   }
 
   Future<void> deleteIntake(String id) async {
-    await _client
-        .from('water_intakes')
-        .delete()
-        .eq('id', id);
+    await _client.from('water_intakes').delete().eq('id', id);
   }
 
-  Future<Map<DateTime, int>> getStatsRange(DateTime start, DateTime end) async {
+  Future<Map<DateTime, int>> getStatsRange(
+    DateTime start,
+    DateTime end, {
+    required String timezone,
+  }) async {
     final String pStart = _toDateString(
       DateTime(start.year, start.month, start.day),
     );
     final String pEnd = _toDateString(DateTime(end.year, end.month, end.day));
     final Object? raw = await _client.rpc<dynamic>(
       'get_stats_range',
-      params: <String, dynamic>{'p_start': pStart, 'p_end': pEnd},
+      params: <String, dynamic>{
+        'p_start': pStart,
+        'p_end': pEnd,
+        'p_tz': _normalizeTimezone(timezone),
+        'p_user_id': _userId,
+      },
     );
     if (raw is! List) {
       return <DateTime, int>{};
@@ -124,19 +129,13 @@ class WaterRepository {
         .stream(primaryKey: <String>['id'])
         .eq('user_id', uid)
         .order('consumed_at', ascending: false)
-        .map(
-      (List<Map<String, dynamic>> event) {
-        final List<WaterIntake> all = event
-            .map(
-              (Map<String, dynamic> m) => WaterIntake.fromJson(
-                m,
-              ),
-            )
-            .where((WaterIntake i) => !i.consumedAt.isBefore(start))
-            .toList();
-        all.sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
-        return all;
-      },
-    );
+        .map((List<Map<String, dynamic>> event) {
+          final List<WaterIntake> all = event
+              .map((Map<String, dynamic> m) => WaterIntake.fromJson(m))
+              .where((WaterIntake i) => !i.consumedAt.isBefore(start))
+              .toList();
+          all.sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
+          return all;
+        });
   }
 }

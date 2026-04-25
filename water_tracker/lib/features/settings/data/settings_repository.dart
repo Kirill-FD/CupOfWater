@@ -14,10 +14,8 @@ class SettingsRepository {
     if (id == null) {
       throw StateError('Not authenticated');
     }
-    final Object? row = await _client.from('profiles').select().eq('id', id).single();
-    return UserProfile.fromJson(
-      Map<String, dynamic>.from(row! as Map<dynamic, dynamic>),
-    );
+    final PostgrestMap row = await _client.from('profiles').select().eq('id', id).single();
+    return UserProfile.fromJson(row);
   }
 
   Future<UserProfile> updateProfile(Map<String, dynamic> updates) async {

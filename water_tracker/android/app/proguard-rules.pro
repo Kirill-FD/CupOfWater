@@ -31,3 +31,7 @@
 
 # App (Glance widget receiver, Application)
 -keep class com.mycompany.water_tracker.** { *; }
+
+# Flutter embedding ссылается на Play Feature Delivery; классы не в classpath.
+# Без этого R8 падает при minifyReleaseWithR8.
+-dontwarn com.google.android.play.core.**

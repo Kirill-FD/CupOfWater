@@ -26,8 +26,8 @@ class NotificationService {
       return;
     }
     tz_data.initializeTimeZones();
-    final String? localTz = await ftz.FlutterTimezone.getLocalTimezone();
-    if (localTz == null || localTz.isEmpty) {
+    final String localTz = await ftz.FlutterTimezone.getLocalTimezone();
+    if (localTz.isEmpty) {
       tz.setLocalLocation(tz.getLocation('UTC'));
     } else {
       try {

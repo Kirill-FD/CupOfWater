@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'package:home_widget/home_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show
+    PostgrestMap,
     Supabase,
     User;
 
@@ -75,18 +76,12 @@ class WidgetService {
     );
     final int total =
         await WaterRepository(Supabase.instance.client).getTodayTotal();
-    final Object? r = await Supabase.instance.client
+    final PostgrestMap r = await Supabase.instance.client
         .from('profiles')
         .select('daily_goal_ml')
         .eq('id', uid)
         .single();
-    final int goal;
-    if (r is Map) {
-      final Map<dynamic, dynamic> m = r;
-      goal = (m['daily_goal_ml'] as num?)?.toInt() ?? 2000;
-    } else {
-      goal = 2000;
-    }
+    final int goal = (r['daily_goal_ml'] as num?)?.toInt() ?? 2000;
     await update(current: total, goal: goal);
   }
 }

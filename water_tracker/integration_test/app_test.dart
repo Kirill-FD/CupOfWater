@@ -51,7 +51,7 @@ void main() {
         ..add(w);
       return w;
     });
-    when(() => repo.deleteIntake(any<String>())).thenAnswer((invocation) {
+    when(() => repo.deleteIntake(any<String>())).thenAnswer((invocation) async {
       final String id = invocation.positionalArguments[0] as String;
       store.removeWhere((WaterIntake e) => e.id == id);
     });

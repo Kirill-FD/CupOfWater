@@ -1,6 +1,5 @@
 import 'dart:async' show unawaited;
 
-import 'package:flutter_riverpod/flutter_riverpod.dart' show AsyncValue;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:water_tracker/features/auth/domain/models/user_profile.dart';
 import 'package:water_tracker/features/settings/presentation/providers/settings_provider.dart';

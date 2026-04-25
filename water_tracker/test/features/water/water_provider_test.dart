@@ -33,7 +33,7 @@ void main() {
   test('optimistic addIntake: temp row then rollback on error', () async {
     when(() => mockRepo.getTodayIntakes()).thenAnswer((_) async => <WaterIntake>[]);
     when(() => mockRepo.addIntake(200)).thenAnswer((_) async {
-      await Future<void>.delayed(const Duration(milliseconds: 30));
+      await Future<void>.delayed(const Duration(milliseconds: 80));
       throw Exception('network');
     });
     when(() => mockRepo.deleteIntake(any<String>())).thenAnswer((_) async {});
@@ -47,10 +47,21 @@ void main() {
       ],
     );
     addTearDown(c.dispose);
+    final ProviderSubscription<AsyncValue<List<WaterIntake>>> sub = c.listen(
+      todayIntakesProvider,
+      (AsyncValue<List<WaterIntake>>? _, AsyncValue<List<WaterIntake>> __) {},
+    );
+    addTearDown(sub.close);
     await c.read(todayIntakesProvider.future);
     final Future<AddIntakeResult> f = c.read(todayIntakesProvider.notifier).addIntake(200);
-    await Future<void>.delayed(const Duration(milliseconds: 2));
-    final List<WaterIntake>? mid = c.read(todayIntakesProvider).valueOrNull;
+    List<WaterIntake>? mid;
+    for (int i = 0; i < 40; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 5));
+      mid = c.read(todayIntakesProvider).valueOrNull;
+      if (mid?.any((WaterIntake w) => w.id.startsWith('temp-')) ?? false) {
+        break;
+      }
+    }
     expect(mid?.any((WaterIntake i) => i.id.startsWith('temp-')), isTrue);
     try {
       await f;

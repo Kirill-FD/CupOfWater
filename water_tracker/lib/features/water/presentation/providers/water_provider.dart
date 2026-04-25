@@ -68,7 +68,7 @@ class TodayIntakes extends _$TodayIntakes {
     if (!online) {
       final OfflineQueue q = await OfflineQueue.instance;
       await q.enqueueAddIntake(amountMl);
-      return AddIntakeResult(queuedOffline: true, goalFirstHit: false);
+      return const AddIntakeResult(queuedOffline: true, goalFirstHit: false);
     }
 
     final WaterRepository repo = ref.read(waterRepositoryProvider);

@@ -1,7 +1,6 @@
 // Поток состояний сети (connectivity_plus).
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'connectivity_state_provider.g.dart';

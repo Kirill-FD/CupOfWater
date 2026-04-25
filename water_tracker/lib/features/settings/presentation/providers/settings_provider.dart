@@ -25,9 +25,23 @@ class UserProfileNotifier extends _$UserProfileNotifier {
     return ref.watch(settingsRepositoryProvider).getProfile();
   }
 
+  Future<void> _applyProfileUpdate(
+    Future<UserProfile> Function() update,
+  ) async {
+    final UserProfile? previousProfile = state.valueOrNull;
+    try {
+      final UserProfile profile = await update();
+      state = AsyncValue<UserProfile>.data(profile);
+    } on Object catch (e, st) {
+      state = previousProfile != null
+          ? AsyncValue<UserProfile>.data(previousProfile)
+          : AsyncValue<UserProfile>.error(e, st);
+      Error.throwWithStackTrace(e, st);
+    }
+  }
+
   Future<void> updateGoal(int goalMl) async {
-    state = const AsyncValue<UserProfile>.loading();
-    state = await AsyncValue.guard(() async {
+    await _applyProfileUpdate(() async {
       final UserProfile p = await ref
           .read(settingsRepositoryProvider)
           .updateProfile(<String, dynamic>{'daily_goal_ml': goalMl});
@@ -37,8 +51,7 @@ class UserProfileNotifier extends _$UserProfileNotifier {
   }
 
   Future<void> updateDisplayName(String name) async {
-    state = const AsyncValue<UserProfile>.loading();
-    state = await AsyncValue.guard(
+    await _applyProfileUpdate(
       () => ref
           .read(settingsRepositoryProvider)
           .updateProfile(
@@ -53,8 +66,7 @@ class UserProfileNotifier extends _$UserProfileNotifier {
     required TimeOfDay startTime,
     required TimeOfDay endTime,
   }) async {
-    state = const AsyncValue<UserProfile>.loading();
-    state = await AsyncValue.guard(() async {
+    await _applyProfileUpdate(() async {
       final UserProfile p = await ref
           .read(settingsRepositoryProvider)
           .updateProfile(

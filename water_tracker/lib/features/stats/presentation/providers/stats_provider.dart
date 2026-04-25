@@ -12,12 +12,18 @@ StatsRepository statsRepository(StatsRepositoryRef ref) {
 
 @riverpod
 Future<Map<DateTime, int>> weeklyStats(WeeklyStatsRef ref) async {
-  return ref.watch(statsRepositoryProvider).getWeeklyStats();
+  final userProfile = await ref.watch(userProfileNotifierProvider.future);
+  return ref
+      .watch(statsRepositoryProvider)
+      .getWeeklyStats(timezone: userProfile.timezone);
 }
 
 @riverpod
 Future<Map<DateTime, int>> monthlyStats(MonthlyStatsRef ref) async {
-  return ref.watch(statsRepositoryProvider).getMonthlyStats();
+  final userProfile = await ref.watch(userProfileNotifierProvider.future);
+  return ref
+      .watch(statsRepositoryProvider)
+      .getMonthlyStats(timezone: userProfile.timezone);
 }
 
 @riverpod
@@ -25,5 +31,8 @@ Future<int> currentStreak(CurrentStreakRef ref) async {
   final userProfile = await ref.watch(userProfileNotifierProvider.future);
   return ref
       .read(statsRepositoryProvider)
-      .getCurrentStreak(userProfile.dailyGoalMl);
+      .getCurrentStreak(
+        userProfile.dailyGoalMl,
+        timezone: userProfile.timezone,
+      );
 }

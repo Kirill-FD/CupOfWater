@@ -34,26 +34,41 @@ class StatsRepository {
   }
 
   /// Последние 7 календарных дней, включая сегодня (local).
-  Future<Map<DateTime, int>> getWeeklyStats() async {
+  Future<Map<DateTime, int>> getWeeklyStats({required String timezone}) async {
     final DateTime end = _dayOnly(DateTime.now());
     final DateTime start = end.subtract(const Duration(days: 6));
-    final Map<DateTime, int> raw = await _water.getStatsRange(start, end);
+    final Map<DateTime, int> raw = await _water.getStatsRange(
+      start,
+      end,
+      timezone: timezone,
+    );
     return _fillRange(raw, _lastNDaysFrom(end, 7));
   }
 
   /// Последние 30 дней, включая сегодня.
-  Future<Map<DateTime, int>> getMonthlyStats() async {
+  Future<Map<DateTime, int>> getMonthlyStats({required String timezone}) async {
     final DateTime end = _dayOnly(DateTime.now());
     final DateTime start = end.subtract(const Duration(days: 29));
-    final Map<DateTime, int> raw = await _water.getStatsRange(start, end);
+    final Map<DateTime, int> raw = await _water.getStatsRange(
+      start,
+      end,
+      timezone: timezone,
+    );
     return _fillRange(raw, _lastNDaysFrom(end, 30));
   }
 
   /// Сколько дней подряд, начиная с сегодня назад, при total >= [dailyGoalMl].
-  Future<int> getCurrentStreak(int dailyGoalMl) async {
+  Future<int> getCurrentStreak(
+    int dailyGoalMl, {
+    required String timezone,
+  }) async {
     final DateTime today = _dayOnly(DateTime.now());
     final DateTime from = today.subtract(const Duration(days: 500));
-    final Map<DateTime, int> raw = await _water.getStatsRange(from, today);
+    final Map<DateTime, int> raw = await _water.getStatsRange(
+      from,
+      today,
+      timezone: timezone,
+    );
     int streak = 0;
     for (int i = 0; i < 500; i++) {
       final DateTime d = today.subtract(Duration(days: i));

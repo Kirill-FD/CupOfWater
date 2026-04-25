@@ -110,7 +110,7 @@ class SettingsScreen extends ConsumerWidget {
                       ListTile(
                         title: Text(l.reminderInterval),
                         subtitle: Text(
-                          '${l.minutesShort(p.reminderIntervalMinutes)}',
+                          l.minutesShort(p.reminderIntervalMinutes),
                         ),
                         onTap: () {
                           unawaited(
@@ -301,57 +301,54 @@ Future<void> _showEditNameDialog(
   UserProfile profile,
 ) async {
   final AppLocalizations l = AppLocalizations.of(context);
-  final TextEditingController c = TextEditingController(
-    text: profile.displayName ?? '',
-  );
-  try {
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext dContext) {
-        return AlertDialog(
-          title: Text(l.name),
-          content: TextField(
-            controller: c,
-            decoration: InputDecoration(
-              labelText: l.nameFieldLabel,
-              hintText: l.nameHint,
-            ),
-            textCapitalization: TextCapitalization.words,
+  String name = profile.displayName ?? '';
+  await showDialog<void>(
+    context: context,
+    builder: (BuildContext dContext) {
+      return AlertDialog(
+        title: Text(l.name),
+        content: TextFormField(
+          initialValue: name,
+          decoration: InputDecoration(
+            labelText: l.nameFieldLabel,
+            hintText: l.nameHint,
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(dContext).pop();
-              },
-              child: Text(l.cancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final NavigatorState nav = Navigator.of(dContext);
-                try {
-                  await ref
-                      .read(userProfileNotifierProvider.notifier)
-                      .updateDisplayName(c.text.trim());
-                  if (dContext.mounted) {
-                    nav.pop();
-                  }
-                } on Object catch (e) {
-                  if (dContext.mounted) {
-                    ScaffoldMessenger.of(dContext).showSnackBar(
-                      SnackBar(content: Text(l.errorGeneric(e.toString()))),
-                    );
-                  }
+          textCapitalization: TextCapitalization.words,
+          onChanged: (String value) {
+            name = value;
+          },
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(dContext).pop();
+            },
+            child: Text(l.cancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final NavigatorState nav = Navigator.of(dContext);
+              try {
+                await ref
+                    .read(userProfileNotifierProvider.notifier)
+                    .updateDisplayName(name.trim());
+                if (dContext.mounted) {
+                  nav.pop();
                 }
-              },
-              child: Text(l.save),
-            ),
-          ],
-        );
-      },
-    );
-  } finally {
-    c.dispose();
-  }
+              } on Object catch (e) {
+                if (dContext.mounted) {
+                  ScaffoldMessenger.of(dContext).showSnackBar(
+                    SnackBar(content: Text(l.errorGeneric(e.toString()))),
+                  );
+                }
+              }
+            },
+            child: Text(l.save),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 Future<void> _showGoalDialog(
@@ -458,54 +455,51 @@ Future<void> _showWeightForGoal(
   void Function(int goalMl) onGoalComputed,
 ) async {
   final AppLocalizations l = AppLocalizations.of(parentContext);
-  final TextEditingController w = TextEditingController();
-  try {
-    final bool? done = await showDialog<bool>(
-      context: parentContext,
-      builder: (BuildContext ctx) {
-        return AlertDialog(
-          title: Text(l.weightKg),
-          content: TextField(
-            controller: w,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              hintText: l.weightExample,
-            ),
+  String weightInput = '';
+  final bool? done = await showDialog<bool>(
+    context: parentContext,
+    builder: (BuildContext ctx) {
+      return AlertDialog(
+        title: Text(l.weightKg),
+        content: TextFormField(
+          initialValue: weightInput,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            hintText: l.weightExample,
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(false);
-              },
-              child: Text(l.cancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(true);
-              },
-              child: Text(l.ok),
-            ),
-          ],
-        );
-      },
-    );
-    if (done != true) {
-      return;
-    }
-    final double? k = double.tryParse(
-      w.text.trim().replaceAll(',', '.'),
-    );
-    if (k == null) {
-      return;
-    }
-    final int targetMl = (k * 35).round();
-    final int snapped = ((targetMl / 50).round() * 50)
-        .clamp(1000, 4000)
-        .toInt();
-    onGoalComputed(snapped);
-  } finally {
-    w.dispose();
+          onChanged: (String value) {
+            weightInput = value;
+          },
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(false);
+            },
+            child: Text(l.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(true);
+            },
+            child: Text(l.ok),
+          ),
+        ],
+      );
+    },
+  );
+  if (done != true) {
+    return;
   }
+  final double? k = double.tryParse(
+    weightInput.trim().replaceAll(',', '.'),
+  );
+  if (k == null) {
+    return;
+  }
+  final int targetMl = (k * 35).round();
+  final int snapped = ((targetMl / 50).round() * 50).clamp(1000, 4000).toInt();
+  onGoalComputed(snapped);
 }
 
 Future<void> _showIntervalBottomSheet(

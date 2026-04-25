@@ -186,12 +186,12 @@ class _ShimmerStatsLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      children: <Widget>[
-        const ShimmerListTileLine(),
-        const SizedBox(height: 12),
-        const ShimmerListTileLine(),
-        const SizedBox(height: 20),
-        const ShimmerChartBox(),
+      children: const <Widget>[
+        ShimmerListTileLine(),
+        SizedBox(height: 12),
+        ShimmerListTileLine(),
+        SizedBox(height: 20),
+        ShimmerChartBox(),
       ],
     );
   }
@@ -394,7 +394,7 @@ class _BarChartBlock extends StatelessWidget {
 
     final bool dark = Theme.of(context).brightness == Brightness.dark;
     final Color grid = dark ? Colors.white24 : Colors.black26;
-    final Color line = AppColors.accent;
+    const Color line = AppColors.accent;
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: BarChart(
@@ -435,13 +435,13 @@ class _BarChartBlock extends StatelessWidget {
                 dashArray: <int>[4, 4],
                 label: HorizontalLineLabel(
                   show: true,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: line,
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),
                   labelResolver: (HorizontalLine h) {
-                    return '${goal} мл';
+                    return '$goal мл';
                   },
                 ),
               ),
@@ -508,7 +508,7 @@ class _BarChartBlock extends StatelessWidget {
             drawVerticalLine: false,
             getDrawingHorizontalLine: (double v) {
               return FlLine(
-                color: grid.withOpacity(0.4),
+                color: grid.withValues(alpha: 0.4),
                 strokeWidth: 1,
               );
             },

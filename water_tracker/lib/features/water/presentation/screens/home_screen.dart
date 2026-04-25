@@ -47,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _onAdd(int amountMl) async {
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
     HapticFeedback.mediumImpact();
@@ -55,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final AddIntakeResult r = await ref
         .read(todayIntakesProvider.notifier)
         .addIntake(amountMl);
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
     final AppLocalizations l = AppLocalizations.of(context);

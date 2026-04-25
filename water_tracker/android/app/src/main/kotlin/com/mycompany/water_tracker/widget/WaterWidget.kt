@@ -5,6 +5,7 @@ import android.net.Uri
 import com.mycompany.water_tracker.MainActivity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
@@ -24,7 +25,6 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import androidx.glance.unit.sp
 import es.antonborri.home_widget.HomeWidgetPlugin
 import es.antonborri.home_widget.actionStartActivity
 
