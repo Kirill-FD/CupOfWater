@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@drawable/water_widget_card_bg">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сегодня"
+            android:textColor="#5B7184"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="1.5"
+            android:textColor="#0E2235"
+            android:textSize="32sp"
+            android:textStyle="normal"
+            android:fontFamily="sans" />
+
+        <TextView
+            android:id="@+id/tvGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:text="/ 2.5 л"
+            android:textColor="#5B7184"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/btnAdd150"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="+150"
+                android:textColor="#0288D1"
+                android:textSize="13sp"
+                android:textStyle="normal"
+                android:background="@drawable/water_widget_chip_bg" />
+
+            <TextView
+                android:id="@+id/btnAdd250"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="+250"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="normal"
+                android:background="@drawable/water_widget_button_bg" />
+
+            <TextView
+                android:id="@+id/btnAdd500"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="+500"
+                android:textColor="#0288D1"
+                android:textSize="13sp"
+                android:textStyle="normal"
+                android:background="@drawable/water_widget_chip_bg" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivWaterProgress"
+        android:layout_width="154dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@string/water_widget_progress_description"
+        android:scaleType="centerInside" />
+
+</LinearLayout>

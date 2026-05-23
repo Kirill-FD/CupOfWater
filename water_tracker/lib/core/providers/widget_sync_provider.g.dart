@@ -6,8 +6,9 @@ part of 'widget_sync_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$widgetSyncHash() => r'c4e8a1b2d3e5f60718293a4b5c6d7e8f9a0b1c2d3';
+String _$widgetSyncHash() => r'072faefdd885da913c56618f1e9b13a797fb604d';
 
+/// See also [widgetSync].
 @ProviderFor(widgetSync)
 final widgetSyncProvider = Provider<int>.internal(
   widgetSync,

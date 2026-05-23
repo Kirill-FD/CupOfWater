@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
+import 'package:water_tracker/core/security/client_rate_limiter.dart';
+import 'package:water_tracker/core/security/input_sanitizer.dart';
 import 'package:water_tracker/core/theme/app_colors.dart';
 import 'package:water_tracker/l10n/app_localizations.dart';
 import 'package:water_tracker/features/auth/data/auth_repository.dart';
@@ -26,6 +28,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isSubmitting = false;
+  bool _showPasswordWhilePressed = false;
 
   @override
   void dispose() {
@@ -49,17 +52,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
+  String _tooManyRequestsMessage(Duration wait, BuildContext context) {
+    final int sec = wait.inSeconds <= 0 ? 1 : wait.inSeconds;
+    final bool ru = Localizations.localeOf(context).languageCode == 'ru';
+    if (ru) {
+      return 'Слишком много попыток. Повторите через $sec c.';
+    }
+    return 'Too many attempts. Try again in $sec s.';
+  }
+
   Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate() || _isSubmitting) {
+      return;
+    }
+    final String email = InputSanitizer.normalizeEmail(_emailController.text);
+    final RateLimitResult limit = ClientRateLimiter.instance.consume(
+      'auth-login:$email',
+      maxAttempts: 5,
+      window: const Duration(minutes: 1),
+    );
+    if (!limit.allowed) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_tooManyRequestsMessage(limit.retryAfter, context)),
+          ),
+        );
+      }
       return;
     }
     setState(() => _isSubmitting = true);
     final AuthRepository repo = ref.read(authRepositoryProvider);
     try {
       await repo.signIn(
-        email: _emailController.text.trim(),
+        email: email,
         password: _passwordController.text,
       );
+      ClientRateLimiter.instance.reset('auth-login:$email');
     } on AuthRepositoryException catch (e) {
       _showError(e);
     } on AuthException catch (e) {
@@ -71,6 +100,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         setState(() => _isSubmitting = false);
       }
     }
+  }
+
+  Widget _holdToRevealIcon({
+    required bool shown,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Listener(
+      onPointerDown: (_) => setState(() => onChanged(true)),
+      onPointerUp: (_) => setState(() => onChanged(false)),
+      onPointerCancel: (_) => setState(() => onChanged(false)),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Icon(
+          shown ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+          size: 20,
+        ),
+      ),
+    );
   }
 
   @override
@@ -120,9 +167,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: !_showPasswordWhilePressed,
                     decoration: InputDecoration(
                       labelText: l.password,
+                      suffixIcon: _holdToRevealIcon(
+                        shown: _showPasswordWhilePressed,
+                        onChanged: (bool value) =>
+                            _showPasswordWhilePressed = value,
+                      ),
                     ),
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _onSubmit(),

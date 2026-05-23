@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CupOfWater — Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="tokens.css"/>
+<style>
+  body { background: #f0eee9; }
+  .canvas-host { width: 100%; height: 100vh; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#0a3a5c">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0a3a5c"/>
+    <circle cx="600" cy="400" r="220" fill="none" stroke="#0288d1" stroke-width="14" opacity="0.4"/>
+    <path d="M 380 460 Q 470 410 560 460 T 740 460 T 820 460 L 820 620 L 380 620 Z" fill="#0288d1" opacity="0.85"/>
+    <text x="600" y="200" font-family="Inter, sans-serif" font-size="42" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="-1">CupOfWater</text>
+    <text x="600" y="240" font-family="Inter, sans-serif" font-size="20" font-weight="500" fill="#9ec9e0" text-anchor="middle">Design</text>
+  </svg>
+</template>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="android-frame.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="screens-1.jsx"></script>
+<script type="text/babel" src="screens-2.jsx"></script>
+<script type="text/babel" src="screens-3.jsx"></script>
+<script type="text/babel" src="widgets.jsx"></script>
+<script type="text/babel" src="prototype.jsx"></script>
+
+<script type="text/babel">
+const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "dark": false,
+  "goal": 2500,
+  "fillPercent": 60,
+  "accentHue": 205,
+  "showAndroid": true,
+  "showWidgets": true
+}/*EDITMODE-END*/;
+
+function App() {
+  const [t, setT] = useTweaks(TWEAKS_DEFAULTS);
+  const dark = t.dark;
+  const goal = t.goal;
+  const fill = t.fillPercent / 100;
+  const current = Math.round(goal * fill);
+
+  // Apply theme attr to body
+  React.useEffect(() => {
+    document.body.dataset.theme = dark ? "dark" : "light";
+    document.body.style.background = dark ? "#06121C" : "#f0eee9";
+  }, [dark]);
+
+  // Apply accent hue
+  React.useEffect(() => {
+    const h = t.accentHue;
+    const root = document.documentElement;
+    root.style.setProperty("--primary", `oklch(0.62 0.13 ${h})`);
+    root.style.setProperty("--primary-light", `oklch(0.78 0.10 ${h})`);
+    root.style.setProperty("--primary-dark", `oklch(0.45 0.13 ${h})`);
+    root.style.setProperty("--water-top", `oklch(0.78 0.10 ${h})`);
+    root.style.setProperty("--water-bottom", `oklch(0.62 0.13 ${h})`);
+    root.style.setProperty("--water-deep", `oklch(0.45 0.13 ${h})`);
+  }, [t.accentHue]);
+
+  const accent = `oklch(0.62 0.13 ${t.accentHue})`;
+  const accentDeep = `oklch(0.45 0.13 ${t.accentHue})`;
+
+  // Helper: phone pair
+  const Pair = ({ children, screen }) => (
+    <div style={{ display: "flex", gap: 28 }}>
+      <IOSDevice dark={dark}>{children}</IOSDevice>
+      {t.showAndroid && <AndroidDevice dark={dark}>{children}</AndroidDevice>}
+    </div>
+  );
+
+  return (
+    <div className="canvas-host">
+      <DesignCanvas>
+        {/* HOME (interactive prototype + static iOS/Android pair) */}
+        <DCSection id="home" title="Главный экран" subtitle="Tap по стакану → +250 мл, Long-press → выбор объёма. Слева — рабочий прототип.">
+          <DCArtboard id="prototype-ios" label="Интерактивный прототип · iOS" width={460} height={920}>
+            <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: dark ? "#06121C" : "transparent" }}>
+              <IOSDevice dark={dark}>
+                <InteractivePrototype dark={dark} accent={accent} accentDeep={accentDeep} goal={goal} fillPercent={fill}/>
+              </IOSDevice>
+            </div>
+          </DCArtboard>
+          <DCArtboard id="home-ios" label="iOS · Material 3 + жидкостная метафора" width={460} height={920}>
+            <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+              <IOSDevice dark={dark}>
+                <HomeScreen dark={dark} accent={accent} accentDeep={accentDeep} current={current} goal={goal}/>
+              </IOSDevice>
+            </div>
+          </DCArtboard>
+          {t.showAndroid && (
+            <DCArtboard id="home-android" label="Android · Material You" width={460} height={920}>
+              <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                <AndroidDevice dark={dark}>
+                  <HomeScreen dark={dark} accent={accent} accentDeep={accentDeep} current={current} goal={goal}/>
+                </AndroidDevice>
+              </div>
+            </DCArtboard>
+          )}
+        </DCSection>
+
+        {/* ONBOARDING */}
+        <DCSection id="onboarding" title="Onboarding" subtitle="3 шага: знакомство → быстрая запись → данные пользователя.">
+          {[1,2,3].map(step => (
+            <DCArtboard key={step} id={`onb-${step}`} label={`Шаг ${step} / 3`} width={460} height={920}>
+              <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                <IOSDevice dark={dark}>
+                  <OnboardingScreen dark={dark} step={step}/>
+                </IOSDevice>
+              </div>
+            </DCArtboard>
+          ))}
+        </DCSection>
+
+        {/* WEEK */}
+        <DCSection id="week" title="Статистика — неделя" subtitle="Гистограмма с линией цели + ключевые метрики.">
+          <DCArtboard id="week-ios" label="iOS" width={460} height={920}>
+            <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+              <IOSDevice dark={dark} title="Статистика"><WeekStatsScreen dark={dark}/></IOSDevice>
+            </div>
+          </DCArtboard>
+          {t.showAndroid && (
+            <DCArtboard id="week-android" label="Android" width={460} height={920}>
+              <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                <AndroidDevice dark={dark} title="Статистика"><WeekStatsScreen dark={dark}/></AndroidDevice>
+              </div>
+            </DCArtboard>
+          )}
+        </DCSection>
+
+        {/* MONTH */}
+        <DCSection id="month" title="Статистика — месяц" subtitle="Heatmap-календарь по интенсивности заполнения цели.">
+          <DCArtboard id="month-ios" label="iOS" width={460} height={920}>
+            <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+              <IOSDevice dark={dark} title="Статистика"><MonthStatsScreen dark={dark}/></IOSDevice>
+            </div>
+          </DCArtboard>
+          {t.showAndroid && (
+            <DCArtboard id="month-android" label="Android" width={460} height={920}>
+              <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                <AndroidDevice dark={dark} title="Статистика"><MonthStatsScreen dark={dark}/></AndroidDevice>
+              </div>
+            </DCArtboard>
+          )}
+        </DCSection>
+
+        {/* PROFILE — содержит настройки и расписание */}
+        <DCSection id="profile" title="Профиль (с настройками)" subtitle="Лайфтайм, достижения, цель, напоминания, тема, синхронизация — всё на одном экране.">
+          <DCArtboard id="prof-ios" label="iOS" width={460} height={920}>
+            <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+              <IOSDevice dark={dark} title="Профиль"><ProfileScreen dark={dark}/></IOSDevice>
+            </div>
+          </DCArtboard>
+          {t.showAndroid && (
+            <DCArtboard id="prof-android" label="Android" width={460} height={920}>
+              <div style={{ width: 460, height: 920, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+                <AndroidDevice dark={dark} title="Профиль"><ProfileScreen dark={dark}/></AndroidDevice>
+              </div>
+            </DCArtboard>
+          )}
+        </DCSection>
+
+        {/* WIDGETS — iOS */}
+        {t.showWidgets && (
+          <DCSection id="widgets-ios" title="Виджеты — iOS" subtitle="Small (2×2), Medium (4×2), Large (4×4). У всех — кнопка добавления воды.">
+            <DCArtboard id="w-ios-s" label="iOS · Small (2×2)" width={220} height={220}>
+              <div style={{ width: 220, height: 220, display: "flex", alignItems: "center", justifyContent: "center",
+                background: dark ? "linear-gradient(160deg, #1B2235, #0E1422)" : "linear-gradient(160deg, #C5D9E8, #E1ECF6)" }}>
+                <WidgetIOSSmall dark={dark} current={current} goal={goal}/>
+              </div>
+            </DCArtboard>
+            <DCArtboard id="w-ios-m" label="iOS · Medium (4×2)" width={414} height={220}>
+              <div style={{ width: 414, height: 220, display: "flex", alignItems: "center", justifyContent: "center",
+                background: dark ? "linear-gradient(160deg, #1B2235, #0E1422)" : "linear-gradient(160deg, #C5D9E8, #E1ECF6)" }}>
+                <WidgetIOSMedium dark={dark} current={current} goal={goal}/>
+              </div>
+            </DCArtboard>
+            <DCArtboard id="w-ios-l" label="iOS · Large (4×4)" width={414} height={432}>
+              <div style={{ width: 414, height: 432, display: "flex", alignItems: "center", justifyContent: "center",
+                background: dark ? "linear-gradient(160deg, #1B2235, #0E1422)" : "linear-gradient(160deg, #C5D9E8, #E1ECF6)" }}>
+                <WidgetIOSLarge dark={dark} current={current} goal={goal}/>
+              </div>
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        {/* WIDGETS — Android */}
+        {t.showWidgets && (
+          <DCSection id="widgets-android" title="Виджеты — Android" subtitle="2×2, 4×2, 4×4. Material You, dynamic color.">
+            <DCArtboard id="w-and-s" label="Android · 2×2" width={220} height={220}>
+              <div style={{ width: 220, height: 220, display: "flex", alignItems: "center", justifyContent: "center",
+                background: dark ? "linear-gradient(160deg, #2A3A2E, #1A2620)" : "linear-gradient(160deg, #D5E8DA, #EAF3ED)" }}>
+                <WidgetAndroid2x2 dark={dark} current={current} goal={goal}/>
+              </div>
+            </DCArtboard>
+            <DCArtboard id="w-and-m" label="Android · 4×2" width={414} height={220}>
+              <div style={{ width: 414, height: 220, display: "flex", alignItems: "center", justifyContent: "center",
+                background: dark ? "linear-gradient(160deg, #2A3A2E, #1A2620)" : "linear-gradient(160deg, #D5E8DA, #EAF3ED)" }}>
+                <WidgetAndroid4x2 dark={dark} current={current} goal={goal}/>
+              </div>
+            </DCArtboard>
+            <DCArtboard id="w-and-l" label="Android · 4×4" width={414} height={432}>
+              <div style={{ width: 414, height: 432, display: "flex", alignItems: "center", justifyContent: "center",
+                background: dark ? "linear-gradient(160deg, #2A3A2E, #1A2620)" : "linear-gradient(160deg, #D5E8DA, #EAF3ED)" }}>
+                <WidgetAndroid4x4 dark={dark} current={current} goal={goal}/>
+              </div>
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        {/* DESIGN SYSTEM */}
+        <DCSection id="ds" title="Design system" subtitle="Токены из Flutter темы (app_colors.dart) + типография Inter.">
+          <DCArtboard id="ds-tokens" label="Палитра + типография" width={720} height={480}>
+            <div style={{ width: 720, height: 480, padding: 28, fontFamily: "Inter, system-ui",
+              background: dark ? "#0A1929" : "#fff", color: dark ? "#E6EFF7" : "#0E2235" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: dark ? "#93A8BC" : "#5B7184" }}>Цвета бренда</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginTop: 12 }}>
+                {[
+                  { n: "primary", v: "#0288D1" },
+                  { n: "primaryLight", v: "#4FC3F7" },
+                  { n: "primaryDark", v: "#01579B" },
+                  { n: "accent", v: "#00BCD4" },
+                  { n: "success", v: "#4CAF50" },
+                  { n: "error", v: "#E53935" },
+                  { n: "bg light", v: "#F5F9FF" },
+                  { n: "bg dark", v: "#0A1929" },
+                ].map(c => (
+                  <div key={c.n}>
+                    <div style={{ height: 56, borderRadius: 12, background: c.v, border: "1px solid rgba(0,0,0,0.06)" }}/>
+                    <div style={{ fontSize: 12, fontWeight: 600, marginTop: 6 }}>{c.n}</div>
+                    <div style={{ fontSize: 11, color: dark ? "#93A8BC" : "#5B7184", fontFamily: "ui-monospace, Menlo, monospace" }}>{c.v}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: dark ? "#93A8BC" : "#5B7184", marginTop: 28 }}>Типография — Inter</div>
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em" }}>1 500 / 2 500 мл</div>
+                <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: "-0.01em", marginTop: 8 }}>Среднее за неделю</div>
+                <div style={{ fontSize: 15, marginTop: 4, color: dark ? "#93A8BC" : "#5B7184" }}>2 500 мл осталось до цели</div>
+                <div style={{ fontSize: 13, marginTop: 4, color: dark ? "#93A8BC" : "#5B7184", fontWeight: 500 }}>Дневная цель · 7 дней подряд</div>
+                <div style={{ fontSize: 11, marginTop: 4, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: dark ? "#93A8BC" : "#5B7184" }}>Section label</div>
+              </div>
+            </div>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Тема">
+          <TweakToggle label="Тёмная тема" value={t.dark} onChange={v => setT({ dark: v })}/>
+        </TweakSection>
+        <TweakSection title="Прогресс">
+          <TweakSlider label="Дневная цель (мл)" value={t.goal} min={1500} max={4000} step={100}
+            onChange={v => setT({ goal: v })}/>
+          <TweakSlider label="Заполненность (%)" value={t.fillPercent} min={0} max={120} step={5}
+            onChange={v => setT({ fillPercent: v })}/>
+        </TweakSection>
+        <TweakSection title="Акцент">
+          <TweakSlider label="Hue (oklch)" value={t.accentHue} min={150} max={280} step={5}
+            onChange={v => setT({ accentHue: v })}/>
+        </TweakSection>
+        <TweakSection title="Видимость">
+          <TweakToggle label="Android" value={t.showAndroid} onChange={v => setT({ showAndroid: v })}/>
+          <TweakToggle label="Виджеты" value={t.showWidgets} onChange={v => setT({ showWidgets: v })}/>
+        </TweakSection>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

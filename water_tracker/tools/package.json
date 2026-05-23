@@ -1,0 +1,11 @@
+{
+  "name": "water_tracker-asset-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate-assets": "node generate_splash_assets.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}

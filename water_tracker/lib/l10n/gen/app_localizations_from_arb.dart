@@ -101,13 +101,13 @@ abstract class L10nFromArb {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Water tracker'**
+  /// **'CupOfWater'**
   String get appName;
 
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Water Tracker'**
+  /// **'CupOfWater'**
   String get appTitle;
 
   /// No description provided for @homeTitle.
@@ -416,6 +416,42 @@ abstract class L10nFromArb {
   /// **'Sign out?'**
   String get logoutTitle;
 
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account permanently?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is irreversible. Your profile and all water history will be deleted.'**
+  String get deleteAccountMessage;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion failed'**
+  String get deleteAccountFailed;
+
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
@@ -518,6 +554,30 @@ abstract class L10nFromArb {
   /// **'From weight'**
   String get calculateByWeight;
 
+  /// No description provided for @languageSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSetting;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageRussian.
+  ///
+  /// In en, this message translates to:
+  /// **'Russian'**
+  String get languageRussian;
+
+  /// No description provided for @invalidWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid weight (1–400 kg)'**
+  String get invalidWeight;
+
   /// No description provided for @minutesShort.
   ///
   /// In en, this message translates to:
@@ -571,6 +631,390 @@ abstract class L10nFromArb {
   /// In en, this message translates to:
   /// **'Add water'**
   String get emptyCta;
+
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink water smarter'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingBody1.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll estimate your personal target and send gentle reminders throughout the day.'**
+  String get onboardingBody1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'One tap — +250 ml'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingBody2.
+  ///
+  /// In en, this message translates to:
+  /// **'Glass, bottle, coffee — log intake faster than finding your bottle.'**
+  String get onboardingBody2;
+
+  /// No description provided for @onboardingTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about you'**
+  String get onboardingTitle3;
+
+  /// No description provided for @onboardingBody3.
+  ///
+  /// In en, this message translates to:
+  /// **'This helps us estimate your daily goal more accurately.'**
+  String get onboardingBody3;
+
+  /// No description provided for @onboardingWeightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get onboardingWeightLabel;
+
+  /// No description provided for @onboardingKgSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get onboardingKgSuffix;
+
+  /// No description provided for @onboardingSuggestedGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested goal'**
+  String get onboardingSuggestedGoal;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @homeTodayHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get homeTodayHeader;
+
+  /// No description provided for @homeMlLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} ml left'**
+  String homeMlLeft(String n);
+
+  /// No description provided for @homeGoalDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached 🎉'**
+  String get homeGoalDone;
+
+  /// No description provided for @homeQuickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick add'**
+  String get homeQuickAdd;
+
+  /// No description provided for @homeCustomVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom volume'**
+  String get homeCustomVolume;
+
+  /// No description provided for @homeWeekMini.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get homeWeekMini;
+
+  /// No description provided for @homeStreakSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'day streak'**
+  String get homeStreakSubtitle;
+
+  /// No description provided for @statsPeriodWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get statsPeriodWeek;
+
+  /// No description provided for @statsPeriodMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get statsPeriodMonth;
+
+  /// No description provided for @statsPeriodYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get statsPeriodYear;
+
+  /// No description provided for @statsAvgWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly average'**
+  String get statsAvgWeek;
+
+  /// No description provided for @statsMlPerDaySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'ml / day'**
+  String get statsMlPerDaySuffix;
+
+  /// No description provided for @statsVsLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ {pct}% vs last week'**
+  String statsVsLastWeek(int pct);
+
+  /// No description provided for @statsVsLastWeekDown.
+  ///
+  /// In en, this message translates to:
+  /// **'↓ {pct}% vs last week'**
+  String statsVsLastWeekDown(int pct);
+
+  /// No description provided for @statsGoalLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal {n}'**
+  String statsGoalLine(String n);
+
+  /// No description provided for @statsDaysGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Days with goal'**
+  String get statsDaysGoalTitle;
+
+  /// No description provided for @statsDaysGoalValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{met} / {total}'**
+  String statsDaysGoalValue(int met, int total);
+
+  /// No description provided for @statsBestDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Best day'**
+  String get statsBestDayTitle;
+
+  /// No description provided for @statsTotalWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Total this week'**
+  String get statsTotalWeekTitle;
+
+  /// No description provided for @statsLitersShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} L'**
+  String statsLitersShort(String n);
+
+  /// No description provided for @statsMonthGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached'**
+  String get statsMonthGoalsTitle;
+
+  /// No description provided for @statsMonthGoalsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{met} / {total} d'**
+  String statsMonthGoalsValue(int met, int total);
+
+  /// No description provided for @statsMonthAvgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get statsMonthAvgTitle;
+
+  /// No description provided for @statsLitersPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} L / day'**
+  String statsLitersPerDay(String n);
+
+  /// No description provided for @statsHeatmapLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get statsHeatmapLess;
+
+  /// No description provided for @statsHeatmapMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get statsHeatmapMore;
+
+  /// No description provided for @statsYearTotalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly totals'**
+  String get statsYearTotalsTitle;
+
+  /// No description provided for @goalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get goalSection;
+
+  /// No description provided for @unitsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Units & format'**
+  String get unitsSection;
+
+  /// No description provided for @volumeUnitMl.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get volumeUnitMl;
+
+  /// No description provided for @glassSizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Glass size'**
+  String get glassSizeTitle;
+
+  /// No description provided for @appearanceSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearanceSection;
+
+  /// No description provided for @accentColorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent color'**
+  String get accentColorTitle;
+
+  /// No description provided for @accentOcean.
+  ///
+  /// In en, this message translates to:
+  /// **'Ocean'**
+  String get accentOcean;
+
+  /// No description provided for @syncSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get syncSection;
+
+  /// No description provided for @syncCloudTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync'**
+  String get syncCloudTitle;
+
+  /// No description provided for @syncHealthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Health / Google Fit'**
+  String get syncHealthTitle;
+
+  /// No description provided for @profileAchievements.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get profileAchievements;
+
+  /// No description provided for @profileSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get profileSeeAll;
+
+  /// No description provided for @profileDaysStat.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get profileDaysStat;
+
+  /// No description provided for @profileDrankStat.
+  ///
+  /// In en, this message translates to:
+  /// **'total'**
+  String get profileDrankStat;
+
+  /// No description provided for @profileMemberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since {date}'**
+  String profileMemberSince(String date);
+
+  /// No description provided for @profileRollingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 12 months'**
+  String get profileRollingHint;
+
+  /// No description provided for @activityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get activityMedium;
+
+  /// No description provided for @weekdayInitialMon.
+  ///
+  /// In en, this message translates to:
+  /// **'M'**
+  String get weekdayInitialMon;
+
+  /// No description provided for @weekdayInitialTue.
+  ///
+  /// In en, this message translates to:
+  /// **'T'**
+  String get weekdayInitialTue;
+
+  /// No description provided for @weekdayInitialWed.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get weekdayInitialWed;
+
+  /// No description provided for @weekdayInitialThu.
+  ///
+  /// In en, this message translates to:
+  /// **'T'**
+  String get weekdayInitialThu;
+
+  /// No description provided for @weekdayInitialFri.
+  ///
+  /// In en, this message translates to:
+  /// **'F'**
+  String get weekdayInitialFri;
+
+  /// No description provided for @weekdayInitialSat.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get weekdayInitialSat;
+
+  /// No description provided for @weekdayInitialSun.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get weekdayInitialSun;
+
+  /// No description provided for @intakeFromGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {goalMl} ml'**
+  String intakeFromGoal(int goalMl);
 }
 
 class _L10nFromArbDelegate extends LocalizationsDelegate<L10nFromArb> {

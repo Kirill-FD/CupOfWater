@@ -93,6 +93,12 @@ class AppLocalizations {
   String get privacy => _d.privacy;
   String get privacyOpenFailed => _d.privacyOpenFailed;
   String get logoutTitle => _d.logoutTitle;
+  String get deleteAccount => _d.deleteAccount;
+  String get deleteAccountTitle => _d.deleteAccountTitle;
+  String get deleteAccountMessage => _d.deleteAccountMessage;
+  String get deleteAccountConfirm => _d.deleteAccountConfirm;
+  String get deleteAccountSuccess => _d.deleteAccountSuccess;
+  String get deleteAccountFailed => _d.deleteAccountFailed;
   String get save => _d.save;
   String get cancel => _d.cancel;
   String errorGeneric(String message) => _d.errorGeneric(message);
@@ -120,6 +126,74 @@ class AppLocalizations {
   String get noData => _d.noData;
   String get emptyCta => _d.emptyCta;
   String get logoutFailed => _d.logoutFailed;
+
+  String get onboardingTitle1 => _d.onboardingTitle1;
+  String get onboardingBody1 => _d.onboardingBody1;
+  String get onboardingTitle2 => _d.onboardingTitle2;
+  String get onboardingBody2 => _d.onboardingBody2;
+  String get onboardingTitle3 => _d.onboardingTitle3;
+  String get onboardingBody3 => _d.onboardingBody3;
+  String get onboardingWeightLabel => _d.onboardingWeightLabel;
+  String get onboardingKgSuffix => _d.onboardingKgSuffix;
+  String get onboardingSuggestedGoal => _d.onboardingSuggestedGoal;
+  String get onboardingNext => _d.onboardingNext;
+  String get onboardingStart => _d.onboardingStart;
+  String get onboardingSkip => _d.onboardingSkip;
+
+  String get homeTodayHeader => _d.homeTodayHeader;
+  String homeMlLeft(String n) => _d.homeMlLeft(n);
+  String get homeGoalDone => _d.homeGoalDone;
+  String get homeQuickAdd => _d.homeQuickAdd;
+  String get homeCustomVolume => _d.homeCustomVolume;
+  String get homeWeekMini => _d.homeWeekMini;
+  String get homeStreakSubtitle => _d.homeStreakSubtitle;
+  String intakeFromGoal(int goalMl) => _d.intakeFromGoal(goalMl);
+
+  String get statsPeriodWeek => _d.statsPeriodWeek;
+  String get statsPeriodMonth => _d.statsPeriodMonth;
+  String get statsPeriodYear => _d.statsPeriodYear;
+  String get statsAvgWeek => _d.statsAvgWeek;
+  String get statsMlPerDaySuffix => _d.statsMlPerDaySuffix;
+  String statsVsLastWeek(int pct) => _d.statsVsLastWeek(pct);
+  String statsVsLastWeekDown(int pct) => _d.statsVsLastWeekDown(pct);
+  String get statsDaysGoalTitle => _d.statsDaysGoalTitle;
+  String statsDaysGoalValue(int met, int total) =>
+      _d.statsDaysGoalValue(met, total);
+  String get statsBestDayTitle => _d.statsBestDayTitle;
+  String get statsTotalWeekTitle => _d.statsTotalWeekTitle;
+  String statsLitersShort(String n) => _d.statsLitersShort(n);
+  String statsGoalLine(String n) => _d.statsGoalLine(n);
+  String get statsHeatmapLess => _d.statsHeatmapLess;
+  String get statsHeatmapMore => _d.statsHeatmapMore;
+  String get statsMonthGoalsTitle => _d.statsMonthGoalsTitle;
+  String statsMonthGoalsValue(int met, int total) =>
+      _d.statsMonthGoalsValue(met, total);
+  String get statsMonthAvgTitle => _d.statsMonthAvgTitle;
+  String statsLitersPerDay(String n) => _d.statsLitersPerDay(n);
+  String get statsYearTotalsTitle => _d.statsYearTotalsTitle;
+
+  String get goalSection => _d.goalSection;
+  String get unitsSection => _d.unitsSection;
+  String get volumeUnitMl => _d.volumeUnitMl;
+  String get glassSizeTitle => _d.glassSizeTitle;
+  String get appearanceSection => _d.appearanceSection;
+  String get accentColorTitle => _d.accentColorTitle;
+  String get accentOcean => _d.accentOcean;
+  String get syncSection => _d.syncSection;
+  String get syncCloudTitle => _d.syncCloudTitle;
+  String get syncHealthTitle => _d.syncHealthTitle;
+  String get profileAchievements => _d.profileAchievements;
+  String get profileSeeAll => _d.profileSeeAll;
+  String get profileDaysStat => _d.profileDaysStat;
+  String get profileDrankStat => _d.profileDrankStat;
+  String profileMemberSince(String date) => _d.profileMemberSince(date);
+  String get profileRollingHint => _d.profileRollingHint;
+  String get activityMedium => _d.activityMedium;
+  String get profileActivity => _d.profileActivity;
+  String get languageSetting => _d.languageSetting;
+  String get languageEnglish => _d.languageEnglish;
+  String get languageRussian => _d.languageRussian;
+  String get invalidWeight => _d.invalidWeight;
 }
 
 // Доп. ключ, не в ARB (снабжен в обоих)
@@ -179,6 +253,12 @@ abstract class _LocData {
   String get privacy;
   String get privacyOpenFailed;
   String get logoutTitle;
+  String get deleteAccount;
+  String get deleteAccountTitle;
+  String get deleteAccountMessage;
+  String get deleteAccountConfirm;
+  String get deleteAccountSuccess;
+  String get deleteAccountFailed;
   String get save;
   String get cancel;
   String errorGeneric(String message);
@@ -206,13 +286,79 @@ abstract class _LocData {
   String get noData;
   String get emptyCta;
   String get logoutFailed;
+
+  String get onboardingTitle1;
+  String get onboardingBody1;
+  String get onboardingTitle2;
+  String get onboardingBody2;
+  String get onboardingTitle3;
+  String get onboardingBody3;
+  String get onboardingWeightLabel;
+  String get onboardingKgSuffix;
+  String get onboardingSuggestedGoal;
+  String get onboardingNext;
+  String get onboardingStart;
+  String get onboardingSkip;
+
+  String get homeTodayHeader;
+  String homeMlLeft(String n);
+  String get homeGoalDone;
+  String get homeQuickAdd;
+  String get homeCustomVolume;
+  String get homeWeekMini;
+  String get homeStreakSubtitle;
+  String intakeFromGoal(int goalMl);
+
+  String get statsPeriodWeek;
+  String get statsPeriodMonth;
+  String get statsPeriodYear;
+  String get statsAvgWeek;
+  String get statsMlPerDaySuffix;
+  String statsVsLastWeek(int pct);
+  String statsVsLastWeekDown(int pct);
+  String get statsDaysGoalTitle;
+  String statsDaysGoalValue(int met, int total);
+  String get statsBestDayTitle;
+  String get statsTotalWeekTitle;
+  String statsLitersShort(String n);
+  String statsGoalLine(String n);
+  String get statsHeatmapLess;
+  String get statsHeatmapMore;
+  String get statsMonthGoalsTitle;
+  String statsMonthGoalsValue(int met, int total);
+  String get statsMonthAvgTitle;
+  String statsLitersPerDay(String n);
+  String get statsYearTotalsTitle;
+
+  String get goalSection;
+  String get unitsSection;
+  String get volumeUnitMl;
+  String get glassSizeTitle;
+  String get appearanceSection;
+  String get accentColorTitle;
+  String get accentOcean;
+  String get syncSection;
+  String get syncCloudTitle;
+  String get syncHealthTitle;
+  String get profileAchievements;
+  String get profileSeeAll;
+  String get profileDaysStat;
+  String get profileDrankStat;
+  String profileMemberSince(String date);
+  String get profileRollingHint;
+  String get activityMedium;
+  String get profileActivity;
+  String get languageSetting;
+  String get languageEnglish;
+  String get languageRussian;
+  String get invalidWeight;
 }
 
 class _En extends _LocData {
   @override
-  String get appName => 'Water tracker';
+  String get appName => 'CupOfWater';
   @override
-  String get appTitle => 'Water Tracker';
+  String get appTitle => 'CupOfWater';
   @override
   String get homeTitle => 'Today';
   @override
@@ -320,6 +466,19 @@ class _En extends _LocData {
   @override
   String get logoutTitle => 'Sign out?';
   @override
+  String get deleteAccount => 'Delete account';
+  @override
+  String get deleteAccountTitle => 'Delete account permanently?';
+  @override
+  String get deleteAccountMessage =>
+      'This action is irreversible. Your profile and all water history will be deleted.';
+  @override
+  String get deleteAccountConfirm => 'Delete';
+  @override
+  String get deleteAccountSuccess => 'Account deleted';
+  @override
+  String get deleteAccountFailed => 'Account deletion failed';
+  @override
   String get save => 'Save';
   @override
   String get cancel => 'Cancel';
@@ -372,14 +531,141 @@ class _En extends _LocData {
   @override
   String get emptyCta => 'Add water';
   @override
+  String get onboardingTitle1 => 'Drink water smarter';
+  @override
+  String get onboardingBody1 =>
+      'We\'ll estimate your personal target and send gentle reminders throughout the day.';
+  @override
+  String get onboardingTitle2 => 'One tap — +250 ml';
+  @override
+  String get onboardingBody2 =>
+      'Glass, bottle, coffee — log intake faster than finding your bottle.';
+  @override
+  String get onboardingTitle3 => 'Tell us about you';
+  @override
+  String get onboardingBody3 =>
+      'This helps us estimate your daily goal more accurately.';
+  @override
+  String get onboardingWeightLabel => 'Weight';
+  @override
+  String get onboardingKgSuffix => 'kg';
+  @override
+  String get onboardingSuggestedGoal => 'Suggested goal';
+  @override
+  String get onboardingNext => 'Next';
+  @override
+  String get onboardingStart => 'Get started';
+  @override
+  String get onboardingSkip => 'Skip';
+  @override
+  String get homeTodayHeader => 'Today';
+  @override
+  String homeMlLeft(String n) => '$n ml left';
+  @override
+  String get homeGoalDone => 'Goal reached 🎉';
+  @override
+  String get homeQuickAdd => 'Quick add';
+  @override
+  String get homeCustomVolume => 'Custom volume';
+  @override
+  String get homeWeekMini => 'This week';
+  @override
+  String get homeStreakSubtitle => 'day streak';
+  @override
+  String intakeFromGoal(int goalMl) => 'of $goalMl ml';
+  @override
+  String get statsPeriodWeek => 'Week';
+  @override
+  String get statsPeriodMonth => 'Month';
+  @override
+  String get statsPeriodYear => 'Year';
+  @override
+  String get statsAvgWeek => 'Weekly average';
+  @override
+  String get statsMlPerDaySuffix => 'ml / day';
+  @override
+  String statsVsLastWeek(int pct) => '↑ +$pct% vs last week';
+  @override
+  String statsVsLastWeekDown(int pct) => '↓ $pct% vs last week';
+  @override
+  String get statsDaysGoalTitle => 'Days with goal';
+  @override
+  String statsDaysGoalValue(int met, int total) => '$met / $total';
+  @override
+  String get statsBestDayTitle => 'Best day';
+  @override
+  String get statsTotalWeekTitle => 'Total this week';
+  @override
+  String statsLitersShort(String n) => '$n L';
+  @override
+  String statsGoalLine(String n) => 'Goal $n';
+  @override
+  String get statsHeatmapLess => 'Less';
+  @override
+  String get statsHeatmapMore => 'More';
+  @override
+  String get statsMonthGoalsTitle => 'Goal reached';
+  @override
+  String statsMonthGoalsValue(int met, int total) => '$met / $total d';
+  @override
+  String get statsMonthAvgTitle => 'Average';
+  @override
+  String statsLitersPerDay(String n) => '$n L / day';
+  @override
+  String get statsYearTotalsTitle => 'Monthly totals';
+  @override
+  String get goalSection => 'Goal';
+  @override
+  String get unitsSection => 'Units & format';
+  @override
+  String get volumeUnitMl => 'Volume';
+  @override
+  String get glassSizeTitle => 'Glass size';
+  @override
+  String get appearanceSection => 'Appearance';
+  @override
+  String get accentColorTitle => 'Accent color';
+  @override
+  String get accentOcean => 'Ocean';
+  @override
+  String get syncSection => 'Sync';
+  @override
+  String get syncCloudTitle => 'Cloud sync';
+  @override
+  String get syncHealthTitle => 'Apple Health / Google Fit';
+  @override
+  String get profileAchievements => 'Achievements';
+  @override
+  String get profileSeeAll => 'All';
+  @override
+  String get profileDaysStat => 'days';
+  @override
+  String get profileDrankStat => 'total';
+  @override
+  String profileMemberSince(String date) => 'Member since $date';
+  @override
+  String get profileRollingHint => 'Last 12 months';
+  @override
+  String get activityMedium => 'Moderate';
+  @override
+  String get profileActivity => 'Activity';
+  @override
+  String get languageSetting => 'Language';
+  @override
+  String get languageEnglish => 'English';
+  @override
+  String get languageRussian => 'Russian';
+  @override
+  String get invalidWeight => 'Enter a valid weight (1–400 kg)';
+  @override
   String get logoutFailed => 'Sign out failed';
 }
 
 class _Ru extends _LocData {
   @override
-  String get appName => 'Трекер воды';
+  String get appName => 'CupOfWater';
   @override
-  String get appTitle => 'Трекер воды';
+  String get appTitle => 'CupOfWater';
   @override
   String get homeTitle => 'Сегодня';
   @override
@@ -487,6 +773,19 @@ class _Ru extends _LocData {
   @override
   String get logoutTitle => 'Выйти из аккаунта?';
   @override
+  String get deleteAccount => 'Удалить аккаунт';
+  @override
+  String get deleteAccountTitle => 'Удалить аккаунт навсегда?';
+  @override
+  String get deleteAccountMessage =>
+      'Это действие необратимо. Профиль и вся история воды будут удалены.';
+  @override
+  String get deleteAccountConfirm => 'Удалить';
+  @override
+  String get deleteAccountSuccess => 'Аккаунт удален';
+  @override
+  String get deleteAccountFailed => 'Не удалось удалить аккаунт';
+  @override
   String get save => 'Сохранить';
   @override
   String get cancel => 'Отмена';
@@ -538,6 +837,133 @@ class _Ru extends _LocData {
   String get noData => 'Нет данных';
   @override
   String get emptyCta => 'Добавить воду';
+  @override
+  String get onboardingTitle1 => 'Пейте воду\nпо науке';
+  @override
+  String get onboardingBody1 =>
+      'Мы рассчитаем вашу личную норму и будем мягко напоминать в течение дня.';
+  @override
+  String get onboardingTitle2 => 'Один тап —\n+250 мл';
+  @override
+  String get onboardingBody2 =>
+      'Стакан, бутылка — добавляйте любой объем быстрее.';
+  @override
+  String get onboardingTitle3 => 'Расскажите\nо себе';
+  @override
+  String get onboardingBody3 =>
+      'Это поможет точнее рассчитать дневную цель.';
+  @override
+  String get onboardingWeightLabel => 'Вес';
+  @override
+  String get onboardingKgSuffix => 'кг';
+  @override
+  String get onboardingSuggestedGoal => 'Рекомендуемая цель';
+  @override
+  String get onboardingNext => 'Дальше';
+  @override
+  String get onboardingStart => 'Начать';
+  @override
+  String get onboardingSkip => 'Пропустить';
+  @override
+  String get homeTodayHeader => 'Сегодня';
+  @override
+  String homeMlLeft(String n) => '$n мл осталось';
+  @override
+  String get homeGoalDone => 'Цель достигнута 🎉';
+  @override
+  String get homeQuickAdd => 'Быстрое добавление';
+  @override
+  String get homeCustomVolume => 'Свой объём';
+  @override
+  String get homeWeekMini => 'За неделю';
+  @override
+  String get homeStreakSubtitle => 'дней подряд';
+  @override
+  String intakeFromGoal(int goalMl) => 'из $goalMl мл';
+  @override
+  String get statsPeriodWeek => 'Неделя';
+  @override
+  String get statsPeriodMonth => 'Месяц';
+  @override
+  String get statsPeriodYear => 'Год';
+  @override
+  String get statsAvgWeek => 'Среднее за неделю';
+  @override
+  String get statsMlPerDaySuffix => 'мл / день';
+  @override
+  String statsVsLastWeek(int pct) => '↑ +$pct% к прошлой неделе';
+  @override
+  String statsVsLastWeekDown(int pct) => '↓ −$pct% к прошлой неделе';
+  @override
+  String get statsDaysGoalTitle => 'Дней с целью';
+  @override
+  String statsDaysGoalValue(int met, int total) => '$met / $total';
+  @override
+  String get statsBestDayTitle => 'Лучший день';
+  @override
+  String get statsTotalWeekTitle => 'Всего за неделю';
+  @override
+  String statsLitersShort(String n) => '$n л';
+  @override
+  String statsGoalLine(String n) => 'Цель $n';
+  @override
+  String get statsHeatmapLess => 'Меньше';
+  @override
+  String get statsHeatmapMore => 'Больше';
+  @override
+  String get statsMonthGoalsTitle => 'Цель достигнута';
+  @override
+  String statsMonthGoalsValue(int met, int total) => '$met / $total дн';
+  @override
+  String get statsMonthAvgTitle => 'Среднее';
+  @override
+  String statsLitersPerDay(String n) => '$n л / день';
+  @override
+  String get statsYearTotalsTitle => 'По месяцам';
+  @override
+  String get goalSection => 'Цель';
+  @override
+  String get unitsSection => 'Единицы и формат';
+  @override
+  String get volumeUnitMl => 'Объём';
+  @override
+  String get glassSizeTitle => 'Размер стакана';
+  @override
+  String get appearanceSection => 'Внешний вид';
+  @override
+  String get accentColorTitle => 'Акцентный цвет';
+  @override
+  String get accentOcean => 'Океан';
+  @override
+  String get syncSection => 'Синхронизация';
+  @override
+  String get syncCloudTitle => 'Облачная синхронизация';
+  @override
+  String get syncHealthTitle => 'Apple Health / Google Fit';
+  @override
+  String get profileAchievements => 'Достижения';
+  @override
+  String get profileSeeAll => 'Все';
+  @override
+  String get profileDaysStat => 'дней';
+  @override
+  String get profileDrankStat => 'выпито';
+  @override
+  String profileMemberSince(String date) => 'В приложении с $date';
+  @override
+  String get profileRollingHint => 'За 12 мес.';
+  @override
+  String get activityMedium => 'Средняя';
+  @override
+  String get profileActivity => 'Активность';
+  @override
+  String get languageSetting => 'Язык';
+  @override
+  String get languageEnglish => 'English';
+  @override
+  String get languageRussian => 'Русский';
+  @override
+  String get invalidWeight => 'Укажите вес от 1 до 400 кг';
   @override
   String get logoutFailed => 'Не вышли';
 }

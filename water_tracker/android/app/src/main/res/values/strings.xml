@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="water_widget_label">Трекер воды</string>
+    <string name="app_name">CupOfWater</string>
+    <string name="water_widget_label">CupOfWater</string>
     <string name="widget_description">Добавляй воду в один тап</string>
+    <string name="water_widget_progress_description">Прогресс воды</string>
+    <string name="water_widget_drop_description">Вода</string>
+    <string name="water_widget_week_description">Прогресс за неделю</string>
 </resources>

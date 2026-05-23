@@ -40,7 +40,7 @@ final todayTotalProvider = AutoDisposeProvider<int>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef TodayTotalRef = AutoDisposeProviderRef<int>;
-String _$dailyWaterGoalHash() => r'363cb4ec24fb38594169dcc46e641e4f64d98417';
+String _$dailyWaterGoalHash() => r'fa72f93951d34bfbafdb86ecf77957511b55ebd5';
 
 /// See also [dailyWaterGoal].
 @ProviderFor(dailyWaterGoal)
@@ -57,7 +57,7 @@ final dailyWaterGoalProvider = AutoDisposeFutureProvider<int>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DailyWaterGoalRef = AutoDisposeFutureProviderRef<int>;
-String _$todayIntakesHash() => r'bab0f6ce0bcfbdeb00b85a0f434c51db1eebf818';
+String _$todayIntakesHash() => r'6862b7c9ec52affc67e6fe2186fd398b5135cd02';
 
 /// See also [TodayIntakes].
 @ProviderFor(TodayIntakes)

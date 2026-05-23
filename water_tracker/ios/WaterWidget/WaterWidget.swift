@@ -179,7 +179,7 @@ struct WaterWidget: Widget {
     StaticConfiguration(kind: kind, provider: Provider()) { entry in
       WaterWidgetEntryView(entry: entry)
     }
-    .configurationDisplayName("Трекер воды")
+    .configurationDisplayName("CupOfWater")
     .description("Следи за нормой воды и добавляй прямо с экрана")
     .supportedFamilies([.systemSmall, .systemMedium])
   }

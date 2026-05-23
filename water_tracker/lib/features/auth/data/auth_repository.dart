@@ -46,4 +46,20 @@ class AuthRepository {
       throw mapGotrueAuthException(e);
     }
   }
+
+  Future<void> deleteAccount() async {
+    try {
+      await _client.rpc('delete_user_account');
+      await _client.auth.signOut();
+    } on AuthException catch (e) {
+      throw mapGotrueAuthException(e);
+    } on PostgrestException catch (e) {
+      throw AuthUnknownFailure(
+        e.message.isNotEmpty
+            ? e.message
+            : 'Не удалось удалить аккаунт. Попробуйте позже.',
+        code: e.code,
+      );
+    }
+  }
 }

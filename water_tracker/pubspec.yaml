@@ -31,6 +31,7 @@ dependencies:
   confetti: ^0.7.0
   google_fonts: ^6.2.1
   url_launcher: ^6.2.0
+  webview_flutter: ^4.13.0
   shimmer: ^3.0.0
 
 dev_dependencies:
@@ -49,7 +50,7 @@ dev_dependencies:
   gotrue: ^2.20.0
   postgrest: ^2.7.0
   flutter_launcher_icons: ^0.14.1
-  flutter_native_splash: ^2.4.3
+  flutter_native_splash: ^2.4.1
 
 dependency_overrides:
   # analyzer_plugin 0.12.x не собирается с analyzer 7.6 (build_runner).
@@ -62,20 +63,26 @@ flutter:
     - assets/animations/
     - assets/empty/
     - assets/icon/
+    - assets/splash/
 
-# dart run flutter_launcher_icons
+# Regenerate launcher mipmaps: dart run flutter_launcher_icons
+# Исходные PNG: cd tools && npm install && npm run generate-assets  (Node.js + sharp)
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/icon.png"
+  remove_alpha_ios: true
+  background_color_ios: "#FFFFFF"
+  adaptive_icon_background: "#0288D1"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   min_sdk_android: 23
 
-# dart run flutter_native_splash:create
+# Regenerate splash natives: dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#E3F2FD"
-  image: "assets/icon/icon.png"
+  color: "#0288D1"
+  image: "assets/splash/splash.png"
   android: true
   ios: true
   android_12:
-    color: "#E3F2FD"
-    image: "assets/icon/icon.png"
+    image: "assets/splash/splash_android12.png"
+    icon_background_color: "#0288D1"

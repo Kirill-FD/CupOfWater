@@ -9,10 +9,10 @@ class L10nFromArbRu extends L10nFromArb {
   L10nFromArbRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appName => 'Трекер воды';
+  String get appName => 'CupOfWater';
 
   @override
-  String get appTitle => 'Трекер воды';
+  String get appTitle => 'CupOfWater';
 
   @override
   String get homeTitle => 'Сегодня';
@@ -172,6 +172,25 @@ class L10nFromArbRu extends L10nFromArb {
   String get logoutTitle => 'Выйти из аккаунта?';
 
   @override
+  String get deleteAccount => 'Удалить аккаунт';
+
+  @override
+  String get deleteAccountTitle => 'Удалить аккаунт навсегда?';
+
+  @override
+  String get deleteAccountMessage =>
+      'Это действие необратимо. Профиль и вся история воды будут удалены.';
+
+  @override
+  String get deleteAccountConfirm => 'Удалить';
+
+  @override
+  String get deleteAccountSuccess => 'Аккаунт удален';
+
+  @override
+  String get deleteAccountFailed => 'Не удалось удалить аккаунт';
+
+  @override
   String get save => 'Сохранить';
 
   @override
@@ -227,6 +246,18 @@ class L10nFromArbRu extends L10nFromArb {
   String get calculateByWeight => 'Рассчитать по весу';
 
   @override
+  String get languageSetting => 'Язык';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageRussian => 'Русский';
+
+  @override
+  String get invalidWeight => 'Укажите вес от 1 до 400 кг';
+
+  @override
   String minutesShort(int n) {
     return '$n мин';
   }
@@ -256,4 +287,218 @@ class L10nFromArbRu extends L10nFromArb {
 
   @override
   String get emptyCta => 'Добавить воду';
+
+  @override
+  String get onboardingTitle1 => 'Пейте воду\nпо науке';
+
+  @override
+  String get onboardingBody1 =>
+      'Мы рассчитаем вашу личную норму и будем мягко напоминать в течение дня.';
+
+  @override
+  String get onboardingTitle2 => 'Один тап —\n+250 мл';
+
+  @override
+  String get onboardingBody2 =>
+      'Стакан, бутылка — добавляйте любой объем быстрее.';
+
+  @override
+  String get onboardingTitle3 => 'Расскажите\nо себе';
+
+  @override
+  String get onboardingBody3 => 'Это поможет точнее рассчитать дневную цель.';
+
+  @override
+  String get onboardingWeightLabel => 'Вес';
+
+  @override
+  String get onboardingKgSuffix => 'кг';
+
+  @override
+  String get onboardingSuggestedGoal => 'Рекомендуемая цель';
+
+  @override
+  String get onboardingNext => 'Дальше';
+
+  @override
+  String get onboardingStart => 'Начать';
+
+  @override
+  String get onboardingSkip => 'Пропустить';
+
+  @override
+  String get homeTodayHeader => 'Сегодня';
+
+  @override
+  String homeMlLeft(String n) {
+    return '$n мл осталось';
+  }
+
+  @override
+  String get homeGoalDone => 'Цель достигнута 🎉';
+
+  @override
+  String get homeQuickAdd => 'Быстрое добавление';
+
+  @override
+  String get homeCustomVolume => 'Свой объём';
+
+  @override
+  String get homeWeekMini => 'За неделю';
+
+  @override
+  String get homeStreakSubtitle => 'дней подряд';
+
+  @override
+  String get statsPeriodWeek => 'Неделя';
+
+  @override
+  String get statsPeriodMonth => 'Месяц';
+
+  @override
+  String get statsPeriodYear => 'Год';
+
+  @override
+  String get statsAvgWeek => 'Среднее за неделю';
+
+  @override
+  String get statsMlPerDaySuffix => 'мл / день';
+
+  @override
+  String statsVsLastWeek(int pct) {
+    return '↑ +$pct% к прошлой неделе';
+  }
+
+  @override
+  String statsVsLastWeekDown(int pct) {
+    return '↓ −$pct% к прошлой неделе';
+  }
+
+  @override
+  String statsGoalLine(String n) {
+    return 'Цель $n';
+  }
+
+  @override
+  String get statsDaysGoalTitle => 'Дней с целью';
+
+  @override
+  String statsDaysGoalValue(int met, int total) {
+    return '$met / $total';
+  }
+
+  @override
+  String get statsBestDayTitle => 'Лучший день';
+
+  @override
+  String get statsTotalWeekTitle => 'Всего за неделю';
+
+  @override
+  String statsLitersShort(String n) {
+    return '$n л';
+  }
+
+  @override
+  String get statsMonthGoalsTitle => 'Цель достигнута';
+
+  @override
+  String statsMonthGoalsValue(int met, int total) {
+    return '$met / $total дн';
+  }
+
+  @override
+  String get statsMonthAvgTitle => 'Среднее';
+
+  @override
+  String statsLitersPerDay(String n) {
+    return '$n л / день';
+  }
+
+  @override
+  String get statsHeatmapLess => 'Меньше';
+
+  @override
+  String get statsHeatmapMore => 'Больше';
+
+  @override
+  String get statsYearTotalsTitle => 'По месяцам';
+
+  @override
+  String get goalSection => 'Цель';
+
+  @override
+  String get unitsSection => 'Единицы и формат';
+
+  @override
+  String get volumeUnitMl => 'Объём';
+
+  @override
+  String get glassSizeTitle => 'Размер стакана';
+
+  @override
+  String get appearanceSection => 'Внешний вид';
+
+  @override
+  String get accentColorTitle => 'Акцентный цвет';
+
+  @override
+  String get accentOcean => 'Океан';
+
+  @override
+  String get syncSection => 'Синхронизация';
+
+  @override
+  String get syncCloudTitle => 'Облачная синхронизация';
+
+  @override
+  String get syncHealthTitle => 'Apple Health / Google Fit';
+
+  @override
+  String get profileAchievements => 'Достижения';
+
+  @override
+  String get profileSeeAll => 'Все';
+
+  @override
+  String get profileDaysStat => 'дней';
+
+  @override
+  String get profileDrankStat => 'выпито';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'В приложении с $date';
+  }
+
+  @override
+  String get profileRollingHint => 'За 12 мес.';
+
+  @override
+  String get activityMedium => 'Средняя';
+
+  @override
+  String get weekdayInitialMon => 'П';
+
+  @override
+  String get weekdayInitialTue => 'В';
+
+  @override
+  String get weekdayInitialWed => 'С';
+
+  @override
+  String get weekdayInitialThu => 'Ч';
+
+  @override
+  String get weekdayInitialFri => 'П';
+
+  @override
+  String get weekdayInitialSat => 'С';
+
+  @override
+  String get weekdayInitialSun => 'В';
+
+  @override
+  String intakeFromGoal(int goalMl) {
+    return 'из $goalMl мл';
+  }
 }

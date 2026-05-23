@@ -55,3 +55,6 @@ ios/Runner/GoogleService-Info.plist
 android/app/google-services.json
 
 run.sh
+
+# Локальные npm-зависимости для tools/ (растеризация иконок)
+tools/node_modules/

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="14dp"
+    android:background="@drawable/water_widget_card_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivDrop"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/water_widget_drop_description"
+            android:src="@drawable/water_widget_drop_icon" />
+
+        <TextView
+            android:id="@+id/tvPercent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="60%"
+            android:textColor="#0E2235"
+            android:textSize="26sp"
+            android:textStyle="normal"
+            android:fontFamily="sans" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pbGoal"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:layout_marginTop="20dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/water_widget_progress_drawable" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom|center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1.5/2.5 л"
+            android:textColor="#0E2235"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/btnAdd250"
+            android:layout_width="74dp"
+            android:layout_height="36dp"
+            android:background="@drawable/water_widget_button_bg"
+            android:gravity="center"
+            android:text="+250"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+
+</LinearLayout>

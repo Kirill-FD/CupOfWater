@@ -12,19 +12,13 @@ const String _kKey = 'offline_intake_queue_v1';
 
 @immutable
 class QueuedIntake {
-  const QueuedIntake({
-    required this.amountMl,
-    required this.createdAtMs,
-  });
+  const QueuedIntake({required this.amountMl, required this.createdAtMs});
 
   final int amountMl;
   final int createdAtMs;
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'ml': amountMl,
-      'at': createdAtMs,
-    };
+    return <String, dynamic>{'ml': amountMl, 'at': createdAtMs};
   }
 
   static QueuedIntake fromMap(Map<String, dynamic> m) {
@@ -70,7 +64,8 @@ class OfflineQueue {
 
   /// Добавить в очередь, если addIntake не ушло в сеть.
   Future<void> enqueueAddIntake(int amountMl) async {
-    final List<QueuedIntake> list = _decode()..add(
+    final List<QueuedIntake> list = _decode()
+      ..add(
         QueuedIntake(
           amountMl: amountMl,
           createdAtMs: DateTime.now().millisecondsSinceEpoch,
@@ -94,7 +89,10 @@ class OfflineQueue {
         await repo.addIntake(q.amountMl);
       } on Object catch (e, s) {
         logAppError('OfflineQueue', e, s);
-        remaining.add(q);
+        remaining
+          ..add(q)
+          ..addAll(all.skip(all.indexOf(q) + 1));
+        break;
       }
     }
     await _encode(remaining);

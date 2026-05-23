@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CupOfWater — App Icon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  body { margin: 0; background: #f0eee9; font-family: Inter, system-ui, sans-serif; color: #0E2235; }
+  .canvas-host { width: 100%; height: 100vh; }
+  .label-row { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B7184; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  /* Adaptive icon (Android) — 432×432 viewport, safe zone 264×264 */
+  .ai-canvas { position: relative; width: 432px; height: 432px; }
+  .ai-bg     { position: absolute; inset: 0; }
+  .ai-fg     { position: absolute; inset: 0; }
+  .ai-mask-square { border-radius: 0; }
+  .ai-mask-rounded { border-radius: 96px; } /* squircle approx */
+  .ai-mask-circle { border-radius: 50%; }
+
+  /* iOS rounded square mask: 22.37% of side ≈ 96.6 on 432 */
+  .ios-mask { border-radius: 96px; }
+
+  /* checker bg to show transparency */
+  .checker {
+    background-image:
+      linear-gradient(45deg, #d6d3cc 25%, transparent 25%),
+      linear-gradient(-45deg, #d6d3cc 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #d6d3cc 75%),
+      linear-gradient(-45deg, transparent 75%, #d6d3cc 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-color: #ece9e3;
+  }
+
+  .safe-zone {
+    position: absolute; left: 84px; top: 84px; width: 264px; height: 264px;
+    border: 1px dashed rgba(2,136,209,0.5); border-radius: 50%;
+    pointer-events: none;
+  }
+  .safe-zone-square {
+    position: absolute; left: 84px; top: 84px; width: 264px; height: 264px;
+    border: 1px dashed rgba(2,136,209,0.5);
+    pointer-events: none;
+  }
+
+  /* Phone mock for context */
+  .phone {
+    width: 280px; height: 580px; border-radius: 48px;
+    background: linear-gradient(160deg, #1c2532, #0c1320);
+    padding: 14px; box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  }
+  .phone-screen {
+    width: 100%; height: 100%; border-radius: 36px; overflow: hidden;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 580'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23A2C9E0'/><stop offset='1' stop-color='%235586a8'/></linearGradient></defs><rect width='280' height='580' fill='url(%23g)'/></svg>");
+    background-size: cover;
+    position: relative;
+    padding: 26px 18px;
+    color: #fff;
+  }
+  .phone-time {
+    text-align: center; font-weight: 600; font-size: 14px; margin-bottom: 26px;
+  }
+  .phone-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 12px;
+  }
+  .phone-app {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: #fff; font-size: 10px; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+  .phone-app-icon {
+    width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(160deg, #ddd, #bbb);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "variant": "drop",
+  "bgStyle": "gradient",
+  "hue": 205,
+  "lighter": true,
+  "wave": true
+}/*EDITMODE-END*/;
+
+// ─────────────────────────────────────────────────────────────
+// BACKGROUND — 432×432 single color or gradient
+// ─────────────────────────────────────────────────────────────
+function IconBackground({ style = "gradient", hue = 205, lighter = true }) {
+  // Tailored stops to feel like clean water, not navy
+  const top = lighter
+    ? `oklch(0.72 0.10 ${hue})`
+    : `oklch(0.62 0.12 ${hue})`;
+  const bottom = lighter
+    ? `oklch(0.55 0.13 ${hue})`
+    : `oklch(0.42 0.14 ${hue})`;
+  const flat = `oklch(0.62 0.13 ${hue})`;
+
+  return (
+    <svg width="432" height="432" viewBox="0 0 432 432" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="cw-bg-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={top}/>
+          <stop offset="100%" stopColor={bottom}/>
+        </linearGradient>
+        {/* subtle radial highlight */}
+        <radialGradient id="cw-bg-shine" cx="0.3" cy="0.2" r="0.9">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.18)"/>
+          <stop offset="60%" stopColor="rgba(255,255,255,0)"/>
+        </radialGradient>
+      </defs>
+      <rect width="432" height="432" fill={style === "gradient" ? "url(#cw-bg-grad)" : flat}/>
+      {style === "gradient" && <rect width="432" height="432" fill="url(#cw-bg-shine)"/>}
+    </svg>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// FOREGROUND VARIANTS — 432×432 transparent, content within 264×264 safe zone
+// All glyphs are centered at (216,216).
+// ─────────────────────────────────────────────────────────────
+
+// Variant A: Water drop with highlight (centered, ~232 tall — stays within safe zone)
+function FG_Drop({ wave = true }) {
+  return (
+    <svg width="432" height="432" viewBox="0 0 432 432" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="drop-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF"/>
+          <stop offset="100%" stopColor="#E6F4FB"/>
+        </linearGradient>
+        <linearGradient id="drop-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.0)"/>
+          <stop offset="100%" stopColor="rgba(2,136,209,0.35)"/>
+        </linearGradient>
+        <clipPath id="drop-clip">
+          {/* Drop path centered roughly at (216, 216), height ~232 */}
+          <path d="M216 100
+                   C 216 100, 130 198, 130 268
+                   a 86 86 0 0 0 172 0
+                   C 302 198, 216 100, 216 100 Z"/>
+        </clipPath>
+      </defs>
+
+      {/* main drop body */}
+      <path d="M216 100
+               C 216 100, 130 198, 130 268
+               a 86 86 0 0 0 172 0
+               C 302 198, 216 100, 216 100 Z"
+        fill="url(#drop-fill)"/>
+
+      {/* faint wave inside drop */}
+      {wave && (
+        <g clipPath="url(#drop-clip)">
+          <rect x="80" y="280" width="320" height="160" fill="url(#drop-water)"/>
+          <path d="M 80 286 Q 130 270 180 286 T 280 286 T 380 286 V 360 H 80 Z"
+            fill="rgba(2,136,209,0.18)"/>
+          <path d="M 80 304 Q 130 290 180 304 T 280 304 T 380 304 V 360 H 80 Z"
+            fill="rgba(2,136,209,0.10)"/>
+        </g>
+      )}
+
+      {/* highlight */}
+      <ellipse cx="186" cy="180" rx="14" ry="28" fill="rgba(255,255,255,0.65)" transform="rotate(-15 186 180)"/>
+    </svg>
+  );
+}
+
+// Variant B: Glass with water (stylized cup)
+function FG_Cup({ wave = true }) {
+  return (
+    <svg width="432" height="432" viewBox="0 0 432 432" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="cup-glass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.95)"/>
+          <stop offset="100%" stopColor="rgba(255,255,255,0.85)"/>
+        </linearGradient>
+        <linearGradient id="cup-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7EC8E8"/>
+          <stop offset="100%" stopColor="#0288D1"/>
+        </linearGradient>
+        <clipPath id="cup-clip">
+          {/* tapered cup, centered horizontally; top y=110, bottom y=348 */}
+          <path d="M 142 110 L 290 110 L 274 348 L 158 348 Z"/>
+        </clipPath>
+      </defs>
+
+      {/* glass shape */}
+      <path d="M 142 110 L 290 110 L 274 348 L 158 348 Z"
+        fill="url(#cup-glass)" stroke="rgba(255,255,255,0.95)" strokeWidth="0"/>
+
+      {/* water ~70% */}
+      <g clipPath="url(#cup-clip)">
+        <rect x="120" y="180" width="200" height="200" fill="url(#cup-water)"/>
+        {wave && (
+          <>
+            <path d="M 120 184 Q 160 168 200 184 T 280 184 T 360 184 V 380 H 120 Z"
+              fill="rgba(255,255,255,0.18)"/>
+            <path d="M 120 196 Q 160 180 200 196 T 280 196 T 360 196 V 380 H 120 Z"
+              fill="rgba(255,255,255,0.10)"/>
+          </>
+        )}
+      </g>
+
+      {/* glass highlight */}
+      <path d="M 158 130 L 162 320" stroke="rgba(255,255,255,0.85)" strokeWidth="6" strokeLinecap="round" opacity="0.7"/>
+    </svg>
+  );
+}
+
+// Variant C: Drop with checkmark (achievement vibe)
+function FG_DropCheck({ wave = true }) {
+  return (
+    <svg width="432" height="432" viewBox="0 0 432 432" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="dc-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF"/>
+          <stop offset="100%" stopColor="#E6F4FB"/>
+        </linearGradient>
+      </defs>
+      <path d="M216 100
+               C 216 100, 130 198, 130 268
+               a 86 86 0 0 0 172 0
+               C 302 198, 216 100, 216 100 Z"
+        fill="url(#dc-fill)"/>
+      {/* check */}
+      <path d="M 175 268 L 205 298 L 263 240"
+        fill="none" stroke="#0288D1" strokeWidth="22" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+// Variant D: Concentric ring + drop (progress metaphor)
+function FG_Ring() {
+  const r = 110, C = 2 * Math.PI * r, p = 0.72;
+  return (
+    <svg width="432" height="432" viewBox="0 0 432 432" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
+      <circle cx="216" cy="216" r={r} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="22"/>
+      <circle cx="216" cy="216" r={r} fill="none" stroke="#FFFFFF" strokeWidth="22"
+        strokeLinecap="round"
+        strokeDasharray={`${C * p} ${C}`}
+        transform="rotate(-90 216 216)"/>
+      {/* small drop */}
+      <path d="M216 156
+               C 216 156, 178 200, 178 232
+               a 38 38 0 0 0 76 0
+               C 254 200, 216 156, 216 156 Z"
+        fill="#FFFFFF"/>
+    </svg>
+  );
+}
+
+function Foreground({ variant, wave }) {
+  if (variant === "cup") return <FG_Cup wave={wave}/>;
+  if (variant === "drop-check") return <FG_DropCheck wave={wave}/>;
+  if (variant === "ring") return <FG_Ring/>;
+  return <FG_Drop wave={wave}/>;
+}
+
+// ─────────────────────────────────────────────────────────────
+// COMPOSITE: 432×432 layered icon
+// ─────────────────────────────────────────────────────────────
+function Icon432({ variant = "drop", bgStyle = "gradient", hue = 205, lighter = true, wave = true, mask = "ios" }) {
+  const cls = mask === "circle" ? "ai-mask-circle" : mask === "square" ? "ai-mask-square" : "ios-mask";
+  return (
+    <div className={`ai-canvas ${cls}`} style={{ overflow: "hidden", background: "#000" }}>
+      <div className="ai-bg"><IconBackground style={bgStyle} hue={hue} lighter={lighter}/></div>
+      <div className="ai-fg"><Foreground variant={variant} wave={wave}/></div>
+    </div>
+  );
+}
+
+// Small download helper — exports SVG strings to PNG via canvas
+function downloadSvgAsPng(svgEl, filename, size = 432) {
+  const xml = new XMLSerializer().serializeToString(svgEl);
+  const svg64 = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, size, size);
+    canvas.toBlob(blob => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 100);
+    }, "image/png");
+  };
+  img.src = svg64;
+}
+
+// Phone mock with the live icon as one of the apps
+function PhoneMock({ variant, bgStyle, hue, lighter, wave }) {
+  const others = [
+    { c: "#fc3158" }, { c: "#34c759" }, { c: "#ff9500" }, { c: "#5e5ce6" },
+    { c: "#5ac8fa" }, { c: "#ffcc00" }, { c: "#af52de" }, { c: "#ff3b30" },
+    { c: "#30d158" }, { c: "#64d2ff" }, { c: "#a2845e" }, { c: "#bf5af2" },
+  ];
+  return (
+    <div className="phone">
+      <div className="phone-screen">
+        <div className="phone-time">9:41</div>
+        <div className="phone-grid">
+          {others.slice(0, 5).map((o, i) => (
+            <div key={i} className="phone-app">
+              <div className="phone-app-icon" style={{ background: `linear-gradient(160deg, ${o.c}, ${o.c}aa)` }}/>
+              <div>App</div>
+            </div>
+          ))}
+          <div className="phone-app">
+            <div style={{ width: 50, height: 50, borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.25)" }}>
+              <div style={{ transform: "scale(0.1157)", transformOrigin: "0 0", width: 432, height: 432 }}>
+                <Icon432 variant={variant} bgStyle={bgStyle} hue={hue} lighter={lighter} wave={wave} mask="ios"/>
+              </div>
+            </div>
+            <div style={{ fontWeight: 700 }}>Cup of Water</div>
+          </div>
+          {others.slice(5, 12).map((o, i) => (
+            <div key={i + 100} className="phone-app">
+              <div className="phone-app-icon" style={{ background: `linear-gradient(160deg, ${o.c}, ${o.c}aa)` }}/>
+              <div>App</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [t, setT] = useTweaks(TWEAKS_DEFAULTS);
+  const variants = [
+    { id: "drop", label: "Капля + волна (главная)" },
+    { id: "cup", label: "Стакан с водой" },
+    { id: "drop-check", label: "Капля + чекмарк" },
+    { id: "ring", label: "Кольцо прогресса" },
+  ];
+
+  return (
+    <div className="canvas-host">
+      <DesignCanvas>
+        {/* HERO — главная иконка в нескольких контекстах */}
+        <DCSection id="hero" title="Главная иконка" subtitle="Background + Foreground собранные вместе. Маска — iOS rounded square (≈22.4%).">
+          <DCArtboard id="icon-512" label="Final · 432×432 · iOS mask" width={520} height={520}>
+            <div style={{ width: 520, height: 520, display: "flex", alignItems: "center", justifyContent: "center", background: "#f0eee9" }}>
+              <div style={{ filter: "drop-shadow(0 30px 50px rgba(2,79,122,0.35))" }}>
+                <Icon432 variant={t.variant} bgStyle={t.bgStyle} hue={t.hue} lighter={t.lighter} wave={t.wave} mask="ios"/>
+              </div>
+            </div>
+          </DCArtboard>
+          <DCArtboard id="icon-circle" label="Circle mask (Android adaptive)" width={520} height={520}>
+            <div style={{ width: 520, height: 520, display: "flex", alignItems: "center", justifyContent: "center", background: "#f0eee9" }}>
+              <div style={{ filter: "drop-shadow(0 30px 50px rgba(2,79,122,0.35))" }}>
+                <Icon432 variant={t.variant} bgStyle={t.bgStyle} hue={t.hue} lighter={t.lighter} wave={t.wave} mask="circle"/>
+              </div>
+            </div>
+          </DCArtboard>
+          <DCArtboard id="icon-square" label="Square mask (legacy)" width={520} height={520}>
+            <div style={{ width: 520, height: 520, display: "flex", alignItems: "center", justifyContent: "center", background: "#f0eee9" }}>
+              <div style={{ filter: "drop-shadow(0 30px 50px rgba(2,79,122,0.35))" }}>
+                <Icon432 variant={t.variant} bgStyle={t.bgStyle} hue={t.hue} lighter={t.lighter} wave={t.wave} mask="square"/>
+              </div>
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        {/* CONTEXT — иконка на хоумскрине */}
+        <DCSection id="context" title="На домашнем экране" subtitle="Как иконка читается среди других приложений.">
+          <DCArtboard id="phone" label="iOS spring board" width={340} height={640}>
+            <div style={{ width: 340, height: 640, display: "flex", alignItems: "center", justifyContent: "center", background: "#1a2030" }}>
+              <PhoneMock variant={t.variant} bgStyle={t.bgStyle} hue={t.hue} lighter={t.lighter} wave={t.wave}/>
+            </div>
+          </DCArtboard>
+          <DCArtboard id="sizes" label="Размерная сетка" width={520} height={520}>
+            <div style={{ width: 520, height: 520, display: "flex", alignItems: "center", justifyContent: "center", gap: 22, background: "#fff", padding: 32 }}>
+              {[180, 120, 80, 56, 40].map(s => (
+                <div key={s} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: s, height: s, borderRadius: s * 0.2237, overflow: "hidden", boxShadow: "0 6px 14px rgba(2,79,122,0.25)" }}>
+                    <div style={{ transform: `scale(${s/432})`, transformOrigin: "0 0", width: 432, height: 432 }}>
+                      <Icon432 variant={t.variant} bgStyle={t.bgStyle} hue={t.hue} lighter={t.lighter} wave={t.wave} mask="ios"/>
+                    </div>
+                  </div>
+                  <div className="mono" style={{ fontSize: 11, color: "#5B7184" }}>{s}px</div>
+                </div>
+              ))}
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        {/* LAYERS — раздельные фон и foreground */}
+        <DCSection id="layers" title="Слои · Background + Foreground" subtitle="Каждый слой 432×432. У foreground прозрачный фон, контент в безопасной зоне 264×264.">
+          <DCArtboard id="bg-only" label="Background · 432×432" width={500} height={520}>
+            <div style={{ width: 500, height: 520, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#fff", gap: 16 }}>
+              <IconBackground style={t.bgStyle} hue={t.hue} lighter={t.lighter}/>
+              <div className="mono" style={{ fontSize: 12, color: "#5B7184" }}>cw_icon_bg.png · 432×432</div>
+            </div>
+          </DCArtboard>
+          <DCArtboard id="fg-only" label="Foreground · 432×432 (transparent)" width={500} height={520}>
+            <div className="checker" style={{ width: 500, height: 520, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+              <div style={{ position: "relative", width: 432, height: 432 }}>
+                <Foreground variant={t.variant} wave={t.wave}/>
+                <div className="safe-zone"/>
+              </div>
+              <div className="mono" style={{ fontSize: 12, color: "#5B7184" }}>cw_icon_fg.png · 432×432 · safe-zone 264 круг</div>
+            </div>
+          </DCArtboard>
+          <DCArtboard id="composed" label="Composed = bg + fg" width={500} height={520}>
+            <div style={{ width: 500, height: 520, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#fff", gap: 16 }}>
+              <div style={{ position: "relative", width: 432, height: 432 }}>
+                <div style={{ position: "absolute", inset: 0 }}><IconBackground style={t.bgStyle} hue={t.hue} lighter={t.lighter}/></div>
+                <div style={{ position: "absolute", inset: 0 }}><Foreground variant={t.variant} wave={t.wave}/></div>
+                <div className="safe-zone"/>
+              </div>
+              <div className="mono" style={{ fontSize: 12, color: "#5B7184" }}>full-bleed 432×432</div>
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        {/* VARIANTS */}
+        <DCSection id="variants" title="Варианты foreground" subtitle="Переключайтесь в Tweaks. Все вписаны в безопасную зону 264×264.">
+          {variants.map(v => (
+            <DCArtboard key={v.id} id={`var-${v.id}`} label={v.label} width={460} height={460}>
+              <div style={{ width: 460, height: 460, display: "flex", alignItems: "center", justifyContent: "center", background: "#f0eee9" }}>
+                <div style={{ filter: "drop-shadow(0 20px 40px rgba(2,79,122,0.3))" }}>
+                  <Icon432 variant={v.id} bgStyle={t.bgStyle} hue={t.hue} lighter={t.lighter} wave={t.wave} mask="ios"/>
+                </div>
+              </div>
+            </DCArtboard>
+          ))}
+        </DCSection>
+
+        {/* DOWNLOAD */}
+        <DCSection id="download" title="Экспорт" subtitle="PNG 432×432, прозрачность сохранена для foreground.">
+          <DCArtboard id="export" label="Скачать слои PNG" width={520} height={360}>
+            <div style={{ width: 520, height: 360, display: "flex", flexDirection: "column", justifyContent: "center", gap: 16, padding: 28, background: "#fff", color: "#0E2235" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#5B7184" }}>Экспорт PNG · 432×432</div>
+              <button id="btn-bg" style={{
+                padding: "14px 16px", borderRadius: 12, border: "1px solid #d9d4cb",
+                background: "#fff", color: "#0E2235", fontWeight: 600, fontSize: 14, cursor: "pointer", textAlign: "left",
+              }}>Background — cw_icon_bg.png</button>
+              <button id="btn-fg" style={{
+                padding: "14px 16px", borderRadius: 12, border: "1px solid #d9d4cb",
+                background: "#fff", color: "#0E2235", fontWeight: 600, fontSize: 14, cursor: "pointer", textAlign: "left",
+              }}>Foreground — cw_icon_fg.png (прозрачный)</button>
+              <button id="btn-full" style={{
+                padding: "14px 16px", borderRadius: 12, border: "none",
+                background: "linear-gradient(180deg, #4FC3F7, #0288D1)", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", textAlign: "left",
+              }}>Composed — cw_icon.png</button>
+              <div style={{ fontSize: 11, color: "#5B7184", marginTop: 4 }}>Текущие настройки: вариант «{t.variant}», hue {t.hue}, фон «{t.bgStyle}»</div>
+            </div>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Иконка">
+          <TweakRadio label="Сюжет" value={t.variant} options={[
+            { value: "drop", label: "Капля" },
+            { value: "cup", label: "Стакан" },
+            { value: "drop-check", label: "Капля+✓" },
+            { value: "ring", label: "Кольцо" },
+          ]} onChange={v => setT({ variant: v })}/>
+        </TweakSection>
+        <TweakSection title="Background">
+          <TweakRadio label="Стиль" value={t.bgStyle} options={[
+            { value: "gradient", label: "Градиент" },
+            { value: "flat", label: "Плоский" },
+          ]} onChange={v => setT({ bgStyle: v })}/>
+          <TweakSlider label="Hue (oklch)" value={t.hue} min={150} max={280} step={5}
+            onChange={v => setT({ hue: v })}/>
+          <TweakToggle label="Светлее" value={t.lighter} onChange={v => setT({ lighter: v })}/>
+        </TweakSection>
+        <TweakSection title="Foreground">
+          <TweakToggle label="Волна внутри" value={t.wave} onChange={v => setT({ wave: v })}/>
+        </TweakSection>
+      </TweaksPanel>
+
+      <ExportButtons t={t}/>
+    </div>
+  );
+}
+
+function ExportButtons({ t }) {
+  React.useEffect(() => {
+    const findSvgIn = (artboardId, indexInside = 0) => {
+      const ab = document.querySelector(`[data-dc-artboard-id="${artboardId}"]`);
+      if (!ab) return null;
+      const svgs = ab.querySelectorAll("svg");
+      return svgs[indexInside] || svgs[0] || null;
+    };
+    const handlers = [
+      ["btn-bg", () => {
+        const svg = findSvgIn("bg-only", 0);
+        if (svg) downloadSvgAsPng(svg, "cw_icon_bg.png");
+      }],
+      ["btn-fg", () => {
+        const svg = findSvgIn("fg-only", 0);
+        if (svg) downloadSvgAsPng(svg, "cw_icon_fg.png");
+      }],
+      ["btn-full", () => {
+        // Build composed: render bg+fg into one canvas
+        const bg = findSvgIn("bg-only", 0);
+        const fgArt = document.querySelector(`[data-dc-artboard-id="fg-only"]`);
+        const fg = fgArt ? fgArt.querySelector("svg") : null;
+        if (!bg || !fg) return;
+        const ser = new XMLSerializer();
+        const bgUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(ser.serializeToString(bg));
+        const fgUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(ser.serializeToString(fg));
+        const bgImg = new Image(); const fgImg = new Image();
+        let loaded = 0;
+        const draw = () => {
+          if (++loaded < 2) return;
+          const c = document.createElement("canvas"); c.width = 432; c.height = 432;
+          const ctx = c.getContext("2d");
+          ctx.drawImage(bgImg, 0, 0, 432, 432);
+          ctx.drawImage(fgImg, 0, 0, 432, 432);
+          c.toBlob(blob => {
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+            a.download = "cw_icon.png"; a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 100);
+          }, "image/png");
+        };
+        bgImg.onload = draw; fgImg.onload = draw;
+        bgImg.src = bgUrl; fgImg.src = fgUrl;
+      }],
+    ];
+    const cleanups = handlers.map(([id, fn]) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      el.addEventListener("click", fn);
+      return () => el.removeEventListener("click", fn);
+    });
+    return () => cleanups.forEach(c => c && c());
+  });
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

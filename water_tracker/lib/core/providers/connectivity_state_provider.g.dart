@@ -7,28 +7,29 @@ part of 'connectivity_state_provider.dart';
 // **************************************************************************
 
 String _$connectivityStreamHash() =>
-    r'8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8';
+    r'2d56c3ed7933038de9f9a0b4f782c4a6fb195220';
 
+/// See also [connectivityStream].
 @ProviderFor(connectivityStream)
-final StreamProvider<List<ConnectivityResult>> connectivityStreamProvider =
+final connectivityStreamProvider =
     StreamProvider<List<ConnectivityResult>>.internal(
-  connectivityStream,
-  name: r'connectivityStreamProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$connectivityStreamHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      connectivityStream,
+      name: r'connectivityStreamProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$connectivityStreamHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ConnectivityStreamRef = StreamProviderRef<List<ConnectivityResult>>;
+String _$isOnlineNowHash() => r'668c90be1ac2a02a45a95db54e90fd90dd047d57';
 
-String _$isOnlineNowHash() => r'7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7';
-
+/// See also [isOnlineNow].
 @ProviderFor(isOnlineNow)
-final FutureProvider<bool> isOnlineNowProvider = FutureProvider<bool>.internal(
+final isOnlineNowProvider = FutureProvider<bool>.internal(
   isOnlineNow,
   name: r'isOnlineNowProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')

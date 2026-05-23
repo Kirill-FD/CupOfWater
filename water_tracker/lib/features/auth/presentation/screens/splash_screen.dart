@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:water_tracker/core/theme/app_colors.dart';
+import 'package:water_tracker/l10n/app_localizations.dart';
 import 'package:water_tracker/features/auth/presentation/providers/auth_provider.dart';
+import 'package:water_tracker/features/onboarding/presentation/providers/onboarding_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -26,6 +28,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(onboardingProvider);
     return Scaffold(
       body: Center(
         child: Column(
@@ -38,7 +41,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Трекер воды',
+              AppLocalizations.of(context).appTitle,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 32),

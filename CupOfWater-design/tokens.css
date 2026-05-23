@@ -1,0 +1,55 @@
+/* CupOfWater — design tokens (mirrors Flutter app_colors.dart) */
+:root {
+  /* Brand */
+  --primary: #0288D1;
+  --primary-light: #4FC3F7;
+  --primary-dark: #01579B;
+  --accent: #00BCD4;
+  --success: #4CAF50;
+  --error: #E53935;
+
+  /* Surface */
+  --bg: #F5F9FF;
+  --surface: #FFFFFF;
+  --surface-2: #EAF3FB;
+  --on-surface: #0E2235;
+  --on-surface-muted: #5B7184;
+  --on-surface-faint: #93A4B6;
+  --divider: rgba(14, 34, 53, 0.08);
+  --shadow-sm: 0 1px 2px rgba(2, 136, 209, 0.06), 0 2px 8px rgba(2, 136, 209, 0.06);
+  --shadow-md: 0 6px 20px rgba(2, 79, 122, 0.10), 0 2px 6px rgba(2, 79, 122, 0.06);
+
+  /* Water gradient */
+  --water-top: #4FC3F7;
+  --water-bottom: #0288D1;
+  --water-deep: #01579B;
+
+  /* Type */
+  --font: "Inter", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+}
+
+[data-theme="dark"] {
+  --bg: #0A1929;
+  --surface: #142436;
+  --surface-2: #1A2C42;
+  --on-surface: #E6EFF7;
+  --on-surface-muted: #93A8BC;
+  --on-surface-faint: #5E7286;
+  --divider: rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Reset-ish */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: var(--font); color: var(--on-surface); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button { font-family: inherit; }

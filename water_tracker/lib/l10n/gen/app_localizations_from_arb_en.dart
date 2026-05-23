@@ -9,10 +9,10 @@ class L10nFromArbEn extends L10nFromArb {
   L10nFromArbEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Water tracker';
+  String get appName => 'CupOfWater';
 
   @override
-  String get appTitle => 'Water Tracker';
+  String get appTitle => 'CupOfWater';
 
   @override
   String get homeTitle => 'Today';
@@ -172,6 +172,25 @@ class L10nFromArbEn extends L10nFromArb {
   String get logoutTitle => 'Sign out?';
 
   @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete account permanently?';
+
+  @override
+  String get deleteAccountMessage =>
+      'This action is irreversible. Your profile and all water history will be deleted.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete';
+
+  @override
+  String get deleteAccountSuccess => 'Account deleted';
+
+  @override
+  String get deleteAccountFailed => 'Account deletion failed';
+
+  @override
   String get save => 'Save';
 
   @override
@@ -227,6 +246,18 @@ class L10nFromArbEn extends L10nFromArb {
   String get calculateByWeight => 'From weight';
 
   @override
+  String get languageSetting => 'Language';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageRussian => 'Russian';
+
+  @override
+  String get invalidWeight => 'Enter a valid weight (1–400 kg)';
+
+  @override
   String minutesShort(int n) {
     return '$n min';
   }
@@ -256,4 +287,219 @@ class L10nFromArbEn extends L10nFromArb {
 
   @override
   String get emptyCta => 'Add water';
+
+  @override
+  String get onboardingTitle1 => 'Drink water smarter';
+
+  @override
+  String get onboardingBody1 =>
+      'We\'ll estimate your personal target and send gentle reminders throughout the day.';
+
+  @override
+  String get onboardingTitle2 => 'One tap — +250 ml';
+
+  @override
+  String get onboardingBody2 =>
+      'Glass, bottle, coffee — log intake faster than finding your bottle.';
+
+  @override
+  String get onboardingTitle3 => 'Tell us about you';
+
+  @override
+  String get onboardingBody3 =>
+      'This helps us estimate your daily goal more accurately.';
+
+  @override
+  String get onboardingWeightLabel => 'Weight';
+
+  @override
+  String get onboardingKgSuffix => 'kg';
+
+  @override
+  String get onboardingSuggestedGoal => 'Suggested goal';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingStart => 'Get started';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get homeTodayHeader => 'Today';
+
+  @override
+  String homeMlLeft(String n) {
+    return '$n ml left';
+  }
+
+  @override
+  String get homeGoalDone => 'Goal reached 🎉';
+
+  @override
+  String get homeQuickAdd => 'Quick add';
+
+  @override
+  String get homeCustomVolume => 'Custom volume';
+
+  @override
+  String get homeWeekMini => 'This week';
+
+  @override
+  String get homeStreakSubtitle => 'day streak';
+
+  @override
+  String get statsPeriodWeek => 'Week';
+
+  @override
+  String get statsPeriodMonth => 'Month';
+
+  @override
+  String get statsPeriodYear => 'Year';
+
+  @override
+  String get statsAvgWeek => 'Weekly average';
+
+  @override
+  String get statsMlPerDaySuffix => 'ml / day';
+
+  @override
+  String statsVsLastWeek(int pct) {
+    return '↑ $pct% vs last week';
+  }
+
+  @override
+  String statsVsLastWeekDown(int pct) {
+    return '↓ $pct% vs last week';
+  }
+
+  @override
+  String statsGoalLine(String n) {
+    return 'Goal $n';
+  }
+
+  @override
+  String get statsDaysGoalTitle => 'Days with goal';
+
+  @override
+  String statsDaysGoalValue(int met, int total) {
+    return '$met / $total';
+  }
+
+  @override
+  String get statsBestDayTitle => 'Best day';
+
+  @override
+  String get statsTotalWeekTitle => 'Total this week';
+
+  @override
+  String statsLitersShort(String n) {
+    return '$n L';
+  }
+
+  @override
+  String get statsMonthGoalsTitle => 'Goal reached';
+
+  @override
+  String statsMonthGoalsValue(int met, int total) {
+    return '$met / $total d';
+  }
+
+  @override
+  String get statsMonthAvgTitle => 'Average';
+
+  @override
+  String statsLitersPerDay(String n) {
+    return '$n L / day';
+  }
+
+  @override
+  String get statsHeatmapLess => 'Less';
+
+  @override
+  String get statsHeatmapMore => 'More';
+
+  @override
+  String get statsYearTotalsTitle => 'Monthly totals';
+
+  @override
+  String get goalSection => 'Goal';
+
+  @override
+  String get unitsSection => 'Units & format';
+
+  @override
+  String get volumeUnitMl => 'Volume';
+
+  @override
+  String get glassSizeTitle => 'Glass size';
+
+  @override
+  String get appearanceSection => 'Appearance';
+
+  @override
+  String get accentColorTitle => 'Accent color';
+
+  @override
+  String get accentOcean => 'Ocean';
+
+  @override
+  String get syncSection => 'Sync';
+
+  @override
+  String get syncCloudTitle => 'Cloud sync';
+
+  @override
+  String get syncHealthTitle => 'Apple Health / Google Fit';
+
+  @override
+  String get profileAchievements => 'Achievements';
+
+  @override
+  String get profileSeeAll => 'All';
+
+  @override
+  String get profileDaysStat => 'days';
+
+  @override
+  String get profileDrankStat => 'total';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'Member since $date';
+  }
+
+  @override
+  String get profileRollingHint => 'Last 12 months';
+
+  @override
+  String get activityMedium => 'Moderate';
+
+  @override
+  String get weekdayInitialMon => 'M';
+
+  @override
+  String get weekdayInitialTue => 'T';
+
+  @override
+  String get weekdayInitialWed => 'W';
+
+  @override
+  String get weekdayInitialThu => 'T';
+
+  @override
+  String get weekdayInitialFri => 'F';
+
+  @override
+  String get weekdayInitialSat => 'S';
+
+  @override
+  String get weekdayInitialSun => 'S';
+
+  @override
+  String intakeFromGoal(int goalMl) {
+    return 'of $goalMl ml';
+  }
 }
