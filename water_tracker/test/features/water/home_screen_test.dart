@@ -48,17 +48,7 @@ void main() {
     when(() => mockSettings.getProfile()).thenAnswer(
       (_) async => UserProfile(id: _kUser.id, dailyGoalMl: 2000),
     );
-    when(() => mockRepo.addIntake(any<int>())).thenAnswer((invocation) async {
-      final int ml = invocation.positionalArguments[0] as int;
-      final DateTime t = DateTime(2020, 1, 1);
-      return WaterIntake(
-        id: 'real-1',
-        userId: _kUser.id,
-        amountMl: ml,
-        consumedAt: t,
-        createdAt: t,
-      );
-    });
+    when(() => mockRepo.addIntakeFast(any<int>())).thenAnswer((_) async {});
   });
 
   testWidgets('home shows progress circle, CTA, ListView; tap +250ml calls addIntake(250)', (
@@ -102,6 +92,6 @@ void main() {
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 700));
-    verify(() => mockRepo.addIntake(250)).called(1);
+    verify(() => mockRepo.addIntakeFast(250)).called(1);
   });
 }

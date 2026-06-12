@@ -68,7 +68,7 @@ void main() {
           defaultToNull: any(named: 'defaultToNull'),
         ),
       ).thenAnswer((_) => afterInsert);
-      when(() => afterInsert.select()).thenAnswer((_) => afterSelect);
+      when(() => afterInsert.select(any())).thenAnswer((_) => afterSelect);
       when(
         () => afterSelect.single(),
       ).thenAnswer((_) => AwaitablePostgrestMap(serverRow));

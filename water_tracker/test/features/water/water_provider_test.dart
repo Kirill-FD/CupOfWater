@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gotrue/gotrue.dart' show User;
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,16 +24,18 @@ void main() {
   late _MockRepo mockRepo;
 
   setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
     registerFallbackValue('');
   });
 
   setUp(() {
     mockRepo = _MockRepo();
+    SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
-  test('optimistic addIntake: temp row then rollback on error', () async {
+  test('optimistic addIntake: keeps row when server write is queued offline', () async {
     when(() => mockRepo.getTodayIntakes()).thenAnswer((_) async => <WaterIntake>[]);
-    when(() => mockRepo.addIntake(200)).thenAnswer((_) async {
+    when(() => mockRepo.addIntakeFast(200)).thenAnswer((_) async {
       await Future<void>.delayed(const Duration(milliseconds: 80));
       throw Exception('network');
     });
@@ -53,7 +56,8 @@ void main() {
     );
     addTearDown(sub.close);
     await c.read(todayIntakesProvider.future);
-    final Future<AddIntakeResult> f = c.read(todayIntakesProvider.notifier).addIntake(200);
+    final Future<AddIntakeResult> f =
+        c.read(todayIntakesProvider.notifier).addIntake(200);
     List<WaterIntake>? mid;
     for (int i = 0; i < 40; i++) {
       await Future<void>.delayed(const Duration(milliseconds: 5));
@@ -63,15 +67,12 @@ void main() {
       }
     }
     expect(mid?.any((WaterIntake i) => i.id.startsWith('temp-')), isTrue);
-    try {
-      await f;
-    } on Exception {
-      // expected
-    }
+    final AddIntakeResult result = await f;
+    expect(result.queuedOffline, isTrue);
     final List<WaterIntake>? end = c.read(todayIntakesProvider).valueOrNull;
     expect(
       end?.any((WaterIntake i) => i.id.startsWith('temp-')),
-      isFalse,
+      isTrue,
     );
   });
 }

@@ -12,3 +12,8 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# Android signing — НИКОГДА не коммить!
+android/key.properties
+*.jks
+*.keystore

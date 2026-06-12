@@ -30,9 +30,19 @@ struct Provider: TimelineProvider {
     completion(Timeline(entries: [entry], policy: .after(next)))
   }
 
+  private func todayDateKey() -> String {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = .current
+    formatter.dateFormat = "yyyy-MM-dd"
+    return formatter.string(from: Date())
+  }
+
   private func readEntry() -> WaterEntry {
     let ud = UserDefaults(suiteName: suiteName)
-    let current = ud?.integer(forKey: "current_ml") ?? 0
+    let today = todayDateKey()
+    let storedDay = ud?.string(forKey: "current_day") ?? ""
+    let current = storedDay == today ? (ud?.integer(forKey: "current_ml") ?? 0) : 0
     let goal = ud?.integer(forKey: "goal_ml") ?? 2000
     return WaterEntry(date: Date(), currentMl: current, goalMl: goal)
   }
@@ -46,8 +56,17 @@ struct AddWaterIntent: AppIntent {
   func perform() async throws -> some IntentResult {
     let suiteName = "group.com.mycompany.watertracker"
     let ud = UserDefaults(suiteName: suiteName)
-    let current = ud?.integer(forKey: "current_ml") ?? 0
+    let today = {
+      let formatter = DateFormatter()
+      formatter.locale = Locale(identifier: "en_US_POSIX")
+      formatter.timeZone = .current
+      formatter.dateFormat = "yyyy-MM-dd"
+      return formatter.string(from: Date())
+    }()
+    let storedDay = ud?.string(forKey: "current_day") ?? ""
+    let current = storedDay == today ? (ud?.integer(forKey: "current_ml") ?? 0) : 0
     let newValue = current + 250
+    ud?.set(today, forKey: "current_day")
     ud?.set(newValue, forKey: "current_ml")
     ud?.set(true, forKey: "pending_sync")
 

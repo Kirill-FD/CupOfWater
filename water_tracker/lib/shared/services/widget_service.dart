@@ -21,6 +21,13 @@ class WidgetService {
 
   static bool _inited = false;
 
+  static String todayDateKey([DateTime? at]) {
+    final DateTime n = at ?? DateTime.now();
+    final String month = n.month.toString().padLeft(2, '0');
+    final String day = n.day.toString().padLeft(2, '0');
+    return '${n.year}-$month-$day';
+  }
+
   static Future<void> init() async {
     if (_inited) {
       return;
@@ -32,10 +39,25 @@ class WidgetService {
     _inited = true;
   }
 
+  static Future<int> readCurrentForToday() async {
+    if (!_inited) {
+      await init();
+    }
+    final String today = todayDateKey();
+    final String? storedDay = await HomeWidget.getWidgetData<String>(
+      'current_day',
+    );
+    if (storedDay != today) {
+      return 0;
+    }
+    return await HomeWidget.getWidgetData<int>('current_ml') ?? 0;
+  }
+
   static Future<void> update({required int current, required int goal}) async {
     if (!_inited) {
       await init();
     }
+    await HomeWidget.saveWidgetData<String>('current_day', todayDateKey());
     await HomeWidget.saveWidgetData<int>('current_ml', current);
     await HomeWidget.saveWidgetData<int>('goal_ml', goal);
     await HomeWidget.saveWidgetData<String>(
@@ -51,10 +73,7 @@ class WidgetService {
   }
 
   static Future<int?> readCurrentTotal() async {
-    if (!_inited) {
-      await init();
-    }
-    return HomeWidget.getWidgetData<int>('current_ml');
+    return readCurrentForToday();
   }
 
   @pragma('vm:entry-point')
@@ -67,15 +86,19 @@ class WidgetService {
         return;
       }
       final int ml = int.tryParse(uri.queryParameters['ml'] ?? '250') ?? 250;
+      final bool syncOnly = uri.queryParameters['sync_only'] == '1';
       if (!kIsWeb) {
         WidgetsFlutterBinding.ensureInitialized();
       }
-      final int previousCurrent =
-          await HomeWidget.getWidgetData<int>('current_ml') ?? 0;
-      final int previousGoal =
-          await HomeWidget.getWidgetData<int>('goal_ml') ?? 2000;
-      final int total = previousCurrent + ml;
-      await update(current: total, goal: previousGoal);
+
+      if (!syncOnly) {
+        final int previousCurrent = await readCurrentForToday();
+        final int previousGoal =
+            await HomeWidget.getWidgetData<int>('goal_ml') ?? 2000;
+        final int total = previousCurrent + ml;
+        await update(current: total, goal: previousGoal);
+      }
+
       try {
         await SupabaseConfig.init();
         final User? user = Supabase.instance.client.auth.currentUser;
@@ -86,14 +109,14 @@ class WidgetService {
         }
         final String uid = user.id;
         final DateTime now = DateTime.now();
-        await Supabase.instance.client
-            .from('water_intakes')
-            .insert(<String, dynamic>{
-              'user_id': uid,
-              'amount_ml': ml,
-              'consumed_at': now.toIso8601String(),
-              'created_at': now.toIso8601String(),
-            });
+        await Supabase.instance.client.from('water_intakes').insert(
+          <String, dynamic>{
+            'user_id': uid,
+            'amount_ml': ml,
+            'consumed_at': now.toIso8601String(),
+            'created_at': now.toIso8601String(),
+          },
+        );
       } on Object {
         final OfflineQueue queue = await OfflineQueue.instance;
         await queue.enqueueAddIntake(ml);

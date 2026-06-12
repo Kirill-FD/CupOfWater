@@ -86,7 +86,7 @@ class OfflineQueue {
     final List<QueuedIntake> remaining = <QueuedIntake>[];
     for (final QueuedIntake q in all) {
       try {
-        await repo.addIntake(q.amountMl);
+        await repo.addIntakeFast(q.amountMl);
       } on Object catch (e, s) {
         logAppError('OfflineQueue', e, s);
         remaining

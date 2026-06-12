@@ -58,3 +58,8 @@ run.sh
 
 # Локальные npm-зависимости для tools/ (растеризация иконок)
 tools/node_modules/
+
+# Android signing — НИКОГДА не коммить!
+android/key.properties
+*.jks
+*.keystore

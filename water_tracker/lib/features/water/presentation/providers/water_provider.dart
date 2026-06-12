@@ -109,7 +109,8 @@ class TodayIntakes extends _$TodayIntakes {
     if (uid == null) {
       return const AddIntakeResult();
     }
-    final int goal = await ref.read(dailyWaterGoalProvider.future);
+    final int goal = ref.read(dailyWaterGoalProvider).valueOrNull ??
+        await ref.read(dailyWaterGoalProvider.future);
     final int before = _sumNonTemp(state.valueOrNull);
     final bool wouldHit = before < goal && before + amountMl >= goal;
 
@@ -136,8 +137,15 @@ class TodayIntakes extends _$TodayIntakes {
 
     final WaterRepository repo = ref.read(waterRepositoryProvider);
     try {
-      await repo.addIntake(amountMl);
-      ref.invalidateSelf();
+      await repo.addIntakeFast(amountMl);
+      final List<WaterIntake> committed = (state.valueOrNull ?? <WaterIntake>[])
+          .map(
+            (WaterIntake i) => i.id == tempId
+                ? i.copyWith(id: 'local-${now.millisecondsSinceEpoch}')
+                : i,
+          )
+          .toList();
+      state = AsyncData<List<WaterIntake>>(committed);
       return AddIntakeResult(goalFirstHit: wouldHit, queuedOffline: false);
     } on Object {
       final OfflineQueue q = await OfflineQueue.instance;
@@ -176,13 +184,17 @@ Future<int> dailyWaterGoal(DailyWaterGoalRef ref) async {
   if (uid == null) {
     return 2000;
   }
-  final Map<String, dynamic>? row = await Supabase.instance.client
-      .from('profiles')
-      .select('daily_goal_ml')
-      .eq('id', uid)
-      .maybeSingle();
-  if (row == null) {
+  try {
+    final Map<String, dynamic>? row = await Supabase.instance.client
+        .from('profiles')
+        .select('daily_goal_ml')
+        .eq('id', uid)
+        .maybeSingle();
+    if (row == null) {
+      return 2000;
+    }
+    return (row['daily_goal_ml'] as num?)?.toInt() ?? 2000;
+  } on Object {
     return 2000;
   }
-  return (row['daily_goal_ml'] as num?)?.toInt() ?? 2000;
 }

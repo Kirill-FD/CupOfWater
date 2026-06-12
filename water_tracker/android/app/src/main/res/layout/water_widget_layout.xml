@@ -55,6 +55,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:text="+150"
                 android:textColor="#0288D1"
@@ -69,6 +71,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:text="+250"
                 android:textColor="#FFFFFF"
@@ -81,6 +85,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:text="+500"
                 android:textColor="#0288D1"
@@ -92,10 +98,13 @@
 
     <ImageView
         android:id="@+id/ivWaterProgress"
-        android:layout_width="154dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
+        android:layout_weight="0.42"
+        android:clickable="false"
         android:contentDescription="@string/water_widget_progress_description"
-        android:scaleType="centerInside" />
+        android:focusable="false"
+        android:scaleType="fitCenter" />
 
 </LinearLayout>

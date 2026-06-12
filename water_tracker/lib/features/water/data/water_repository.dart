@@ -10,6 +10,9 @@ class WaterRepository {
 
   final SupabaseClient _client;
 
+  static const String _intakeColumns =
+      'id, user_id, amount_ml, consumed_at, created_at';
+
   String get _userId {
     final String? id = _client.auth.currentUser?.id;
     if (id == null) {
@@ -38,7 +41,7 @@ class WaterRepository {
     final DateTime start = _startOfLocalDay();
     final PostgrestList data = await _client
         .from('water_intakes')
-        .select()
+        .select(_intakeColumns)
         .eq('user_id', _userId)
         .gte('consumed_at', start.toIso8601String())
         .order('consumed_at', ascending: false);
@@ -61,6 +64,17 @@ class WaterRepository {
     return int.parse(s, radix: 10);
   }
 
+  Future<void> addIntakeFast(int amountMl) async {
+    final String uid = _userId;
+    final DateTime now = DateTime.now();
+    await _client.from('water_intakes').insert(<String, dynamic>{
+      'user_id': uid,
+      'amount_ml': amountMl,
+      'consumed_at': now.toIso8601String(),
+      'created_at': now.toIso8601String(),
+    });
+  }
+
   Future<WaterIntake> addIntake(int amountMl) async {
     final String uid = _userId;
     final DateTime now = DateTime.now();
@@ -72,7 +86,7 @@ class WaterRepository {
           'consumed_at': now.toIso8601String(),
           'created_at': now.toIso8601String(),
         })
-        .select()
+        .select(_intakeColumns)
         .single();
     return WaterIntake.fromJson(row);
   }
